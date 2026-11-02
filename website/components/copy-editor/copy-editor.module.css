@@ -1,0 +1,30 @@
+.editable {
+  outline: 1px dashed transparent;
+  outline-offset: 6px;
+  border-radius: 4px;
+  cursor: text;
+  transition: outline-color 120ms ease;
+}
+
+.editable:hover {
+  outline-color: rgb(255 255 255 / 0.35);
+}
+
+.editable:focus {
+  outline: 1px solid rgb(255 200 120 / 0.9);
+}
+
+.badge {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1000;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.75);
+  color: rgb(255 255 255 / 0.85);
+  font:
+    500 12px / 1 system-ui,
+    sans-serif;
+  pointer-events: none;
+}

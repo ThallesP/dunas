@@ -1,0 +1,34 @@
+---
+title: Como funciona
+description: O que roda no seu app, o que fica no seu banco e o que vai para o provedor.
+---
+
+O dunas é uma biblioteca. Ele roda dentro do seu servidor, guarda tudo no seu Postgres e conversa direto com os provedores de pagamento. Não existe um serviço de cobrança no meio, nem uma conta para criar.
+
+## O que fica onde
+
+<Architecture />
+
+Como os direitos de cada cliente estão no seu banco, perguntar se alguém pode usar uma feature é uma consulta local. Não depende do provedor estar no ar.
+
+## Uma assinatura, do começo ao fim
+
+1. O cliente escolhe o Pro na sua página de preços.
+2. O dunas cria uma assinatura aguardando pagamento e pede a cobrança a um provedor.
+3. O cliente paga.
+4. O provedor avisa por webhook. O dunas confere a assinatura do webhook e relê a cobrança no provedor antes de mudar qualquer coisa.
+5. A assinatura fica ativa, o cliente ganha o que o Pro inclui e você recebe o evento `subscription.activated`.
+
+Daí em diante, o dunas cria a cobrança de cada novo período sozinho. Veja [Assinaturas](/docs/conceitos/assinaturas).
+
+## A rota
+
+O dunas atende numa rota só do seu app, por padrão `/api/dunas`. Ela recebe três tipos de chamada:
+
+| Quem chama | Para quê |
+| --- | --- |
+| O navegador | Ver planos, assinar, cancelar e acompanhar uma cobrança |
+| Os provedores | Avisar que uma cobrança mudou |
+| O seu cron | Rodar as renovações |
+
+O navegador nunca diz quem é o cliente. Cada requisição passa pela sua função `identify`, que lê a sessão do seu app.

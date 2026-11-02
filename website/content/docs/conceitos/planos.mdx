@@ -1,0 +1,59 @@
+---
+title: Planos e features
+description: Declare o que cada plano inclui. O resto do app só pergunta se o cliente pode.
+---
+
+Uma **feature** é algo que você controla: mensagens, assentos, um modelo melhor. Um **plano** diz quanto de cada feature o cliente recebe e quanto custa.
+
+```ts title="billing/plans.ts"
+import { feature, plan } from "dunas"
+
+export const messages = feature({ id: "messages", type: "metered" })
+export const seats = feature({ id: "seats", type: "metered" })
+export const proModels = feature({ id: "pro_models", type: "boolean" })
+
+export const free = plan({
+  id: "free",
+  default: true,
+  includes: [messages({ limit: 100 }), seats({ limit: 1, reset: "never" })],
+})
+
+export const pro = plan({
+  id: "pro",
+  price: { amountInCents: 4_990, interval: "month" },
+  includes: [messages({ limit: 5_000 }), seats({ limit: 10, reset: "never" }), proModels()],
+})
+```
+
+## Dois tipos de feature
+
+**Com limite** (`metered`) conta o uso. O limite é um número ou `"unlimited"`, e o uso volta a zero todo mês. Mude com `reset`: `day`, `week`, `month`, `year` ou `never`. Assentos, por exemplo, não zeram.
+
+**Liga e desliga** (`boolean`) só diz se o plano tem ou não tem.
+
+## O plano padrão
+
+Quem nunca assinou nada está no plano marcado com `default: true`. Ele precisa ser grátis. Quando uma assinatura paga é cancelada, o cliente volta para ele.
+
+## Grupos e add-ons
+
+Planos do mesmo `group` se substituem: assinar o Pro tira o cliente do grátis. Todo plano está no grupo `"base"` se você não disser outro.
+
+Planos em grupos diferentes se somam. É assim que você faz um add-on:
+
+```ts
+export const extraSeats = plan({
+  id: "extra_seats",
+  group: "seats",
+  price: { amountInCents: 1_990, interval: "month" },
+  includes: [seats({ limit: 5, reset: "never" })],
+})
+```
+
+Um cliente no Pro com esse add-on tem 15 assentos.
+
+## Tudo tipado
+
+Os ids dos planos e das features viram tipos. Um id escrito errado não compila, em nenhum lugar do app.
+
+Todas as opções estão na [referência](/docs/referencia/configuracao#planos).

@@ -1,0 +1,86 @@
+---
+title: Limitar uso
+description: Libere uma feature só para quem tem direito e conte o que cada cliente usou.
+---
+
+Toda decisão de acesso acontece no servidor, antes de entregar a feature.
+
+## Gastar uma unidade
+
+Para coisas que se gastam, como mensagens, use `consume`. Ele confere o saldo e registra o uso numa operação só, então duas requisições ao mesmo tempo não passam do limite.
+
+```ts title="app/api/chat/route.ts"
+const { allowed, balance } = await billing.consume({ customerId: user.id, featureId: "messages" })
+
+if (!allowed) {
+  return Response.json({ error: "Limite do plano atingido" }, { status: 402 })
+}
+```
+
+Passe `amount` para gastar mais de uma unidade, e `idempotencyKey` se a requisição puder ser repetida: a mesma chave conta uma vez só.
+
+## Só perguntar
+
+Para features liga e desliga, ou quando você quer conferir antes de fazer um trabalho caro, use `check`. Ele não registra nada.
+
+```ts
+const { allowed } = await billing.check({ customerId: user.id, featureId: "pro_models" })
+```
+
+Em features com limite, `required` diz quantas unidades você vai precisar:
+
+```ts
+const { allowed } = await billing.check({ customerId: user.id, featureId: "messages", required: 5 })
+```
+
+## Registrar sem bloquear
+
+`track` registra sempre, mesmo acima do limite. Serve para uso que já aconteceu, e aceita valores negativos para devolver:
+
+```ts
+await billing.track({ customerId: user.id, featureId: "seats", amount: 1 })  // entrou alguém
+await billing.track({ customerId: user.id, featureId: "seats", amount: -1 }) // saiu alguém
+```
+
+## Mostrar o saldo
+
+`getCustomer` devolve o saldo de cada feature e o estado das features liga e desliga:
+
+```ts
+const { balances, flags } = await billing.getCustomer({ customerId: user.id })
+
+balances.messages // { limit: 5000, used: 120, remaining: 4880, resetsAt: Date }
+flags.pro_models  // true
+```
+
+## No NestJS
+
+Crie os decorators a partir do `billing`, uma vez:
+
+```ts title="billing/dunas.ts"
+import { createDunasDecorators } from "dunas/nestjs"
+
+export const { RequireFeature, Consume } = createDunasDecorators(billing)
+```
+
+E use nas rotas:
+
+```ts title="chat.controller.ts"
+import { Controller, Post } from "@nestjs/common"
+import { Consume, RequireFeature } from "./billing/dunas"
+
+@Controller("chat")
+export class ChatController {
+  @Post()
+  @Consume("messages")
+  send() {}
+
+  @Post("pro")
+  @RequireFeature("pro_models")
+  sendWithProModel() {}
+}
+```
+
+Os decorators acham o cliente com o seu `identify`. Quando o plano não deixa, a rota nem roda: a resposta é 402, com `FEATURE_NOT_ALLOWED` ou `LIMIT_REACHED`. `Consume` gasta antes da rota rodar, como `consume`, e aceita `amount`. `RequireFeature` aceita `required` em features com limite.
+
+Os ids vêm dos seus planos. Uma feature que não existe, ou `Consume` numa feature liga e desliga, não compila.

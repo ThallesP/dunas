@@ -1,0 +1,79 @@
+---
+title: Servidor
+description: Os métodos da instância criada por createDunas.
+---
+
+Todos os ids de plano e de feature são tipados a partir dos seus planos.
+
+## Clientes
+
+| Método | Devolve |
+| --- | --- |
+| `upsertCustomer({ id, name?, email?, taxId?, phone?, metadata? })` | O cliente. CPF/CNPJ e telefone são validados e normalizados |
+| `getCustomer({ customerId })` | O cliente com `subscriptions`, `balances` e `flags` |
+
+Um cliente é criado sozinho, no plano padrão, na primeira vez que o id aparece.
+
+## Acesso e uso
+
+| Método | Devolve |
+| --- | --- |
+| `check({ customerId, featureId, required? })` | `{ allowed, balance }` em features com limite, `{ allowed }` nas liga e desliga |
+| `consume({ customerId, featureId, amount?, idempotencyKey? })` | `{ allowed, balance }`. Só registra se houver saldo |
+| `track({ customerId, featureId, amount?, idempotencyKey? })` | `{ allowed, balance }`. Registra sempre |
+
+`amount` é 1 por padrão. `balance` é `{ limit, used, remaining, resetsAt }`.
+
+## Planos e assinaturas
+
+| Método | Devolve |
+| --- | --- |
+| `listPlans({ customerId })` | Os planos com `action` e a `subscription` do cliente em cada um |
+| `subscribe({ customerId, planId, method?, checkout?, successUrl? })` | `{ subscription, next }` |
+| `cancel({ customerId, planId, immediately? })` | A assinatura cancelada ou agendada, ou `null` |
+
+| `next.type` | Quando | Traz |
+| --- | --- | --- |
+| `"redirect"` | Falta pagar, com `checkout: "hosted"` | `url` e `chargeId` |
+| `"pix"` | Falta pagar, com `checkout: "embedded"` | `brCode`, `qrCodeImageUrl`, `expiresAt` e `chargeId` |
+| `"none"` | O plano é grátis, o cliente já tem esse plano, ou volta ao plano padrão no fim do período | — |
+
+| Opção de `subscribe` | Padrão | |
+| --- | --- | --- |
+| `method` | Pix Automático se algum provedor oferecer, senão Pix | `"pix"`, `"pix_automatico"` ou `"card"` |
+| `checkout` | `"hosted"` | `"hosted"` manda para a página do provedor. `"embedded"` devolve o Pix para você mostrar |
+| `successUrl` | — | Para onde a página do provedor volta depois do pagamento, quando ele oferece isso |
+
+## Cobranças
+
+| Método | Devolve |
+| --- | --- |
+| `getCharge({ chargeId })` | A cobrança como está no banco |
+| `syncCharge({ chargeId })` | A cobrança relida no provedor |
+| `simulatePayment({ chargeId })` | A cobrança paga. Só no sandbox |
+
+## Operação
+
+| Método | O que faz |
+| --- | --- |
+| `migrate()` | Cria ou atualiza as tabelas `dunas_*` |
+| `registerWebhooks({ baseUrl })` | Registra os webhooks em cada provedor e devolve as URLs |
+| `runRenewals()` | Roda as renovações e devolve quantas cobranças e assinaturas mudaram |
+| `handler(request)` | Atende a rota do dunas. Recebe um `Request` e devolve um `Response` |
+| `on(event, handler)` | Registra mais um handler para um [evento](/docs/referencia/configuracao#eventos). Devolve a função que o remove |
+
+## Erros
+
+Os métodos lançam `DunasError`, com um `code`:
+
+| `code` | Quando |
+| --- | --- |
+| `PLAN_NOT_FOUND` | O plano não está nos seus planos |
+| `CHARGE_NOT_FOUND` | A cobrança não existe ou é de outro cliente |
+| `PROVIDER_NOT_FOUND` | O roteamento escolheu um provedor que não está configurado |
+| `INVALID_TAX_ID` | O CPF ou CNPJ é inválido |
+| `INVALID_PHONE` | O telefone não é um celular brasileiro válido |
+| `ALL_PROVIDERS_FAILED` | Nenhum provedor conseguiu criar a cobrança |
+| `SIMULATION_NOT_SUPPORTED` | O provedor não simula pagamentos |
+| `FEATURE_NOT_METERED` | `consume` ou `track` numa feature liga e desliga |
+| `METHOD_NOT_AVAILABLE` | Nenhum provedor oferece a forma de pagamento ou o checkout pedido |

@@ -1,0 +1,23 @@
+export const translations = {
+  "On this page(table of contents)": "Nesta página",
+  "No Headings(table of contents)": "Sem seções",
+  "Search(search trigger)": "Buscar",
+  "Search(search dialog)": "Buscar",
+  "No results found(search dialog)": "Nada encontrado",
+  "Search failed(search dialog)": "A busca falhou",
+  "Next Page(pagination)": "Próxima",
+  "Previous Page(pagination)": "Anterior",
+  "Copy Markdown(page actions)": "Copiar Markdown",
+  "Copied Markdown(page actions)": "Markdown copiado",
+  "Open(page actions)": "Abrir",
+  "View as Markdown(page actions)": "Ver como Markdown",
+  "Open in GitHub(page actions)": "Abrir no GitHub",
+  "Open in ChatGPT(page actions)": "Abrir no ChatGPT",
+  "Open in Claude(page actions)": "Abrir no Claude",
+  "Open in Cursor(page actions)": "Abrir no Cursor",
+  "Open in Scira AI(page actions)": "Abrir no Scira AI",
+  "Read {url}, I want to ask questions about it.(page actions)":
+    "Leia {url}, quero fazer perguntas sobre isso.",
+  "Page Not Found(404 page)": "Página não encontrada",
+  "Back to Home(404 page)": "Voltar ao início",
+}

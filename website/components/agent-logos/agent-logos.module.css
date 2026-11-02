@@ -1,0 +1,39 @@
+.logos {
+  display: inline-flex;
+  flex: none;
+}
+
+.coin {
+  display: grid;
+  place-items: center;
+  width: 1em;
+  height: 1em;
+  border-radius: 999px;
+  border: 1px solid rgba(174, 187, 214, 0.22);
+  background: #0b0f18;
+  color: #c3cada;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.coin + .coin {
+  margin-left: -0.28em;
+}
+
+.coin:nth-child(2) {
+  transform: translateX(calc(-0.06em * var(--agent-logos-pull, 1)));
+}
+
+.coin:nth-child(3) {
+  transform: translateX(calc(-0.12em * var(--agent-logos-pull, 1)));
+}
+
+.coin svg {
+  width: 48%;
+  height: 48%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coin {
+    transition: none;
+  }
+}

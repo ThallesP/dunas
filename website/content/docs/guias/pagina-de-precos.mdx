@@ -1,0 +1,81 @@
+---
+title: Página de preços
+description: Mostre os planos e cobre a assinatura, direto do navegador.
+---
+
+## Liste os planos
+
+`listPlans` devolve cada plano com o que o botão deve fazer para o cliente logado. A página não precisa de nenhuma regra de cobrança.
+
+```tsx title="app/precos/plan-list.tsx"
+const plans = await dunas.listPlans()
+
+return plans.map(({ id, name, price, action }) => (
+  <PlanCard key={id} name={name} price={price} action={action} />
+))
+```
+
+| `action` | Sugestão de botão |
+| --- | --- |
+| `current` | Plano atual, desabilitado |
+| `subscribe` | Assinar |
+| `upgrade` | Fazer upgrade |
+| `downgrade` | Mudar de plano |
+| `pending_payment` | Pagar cobrança em aberto |
+| `resume` | Manter assinatura |
+| `scheduled` | Volta para este plano no fim do período |
+
+## Assine
+
+```tsx title="app/precos/subscribe-button.tsx"
+const { next } = await dunas.subscribe({
+  planId: "pro",
+  successUrl: `${location.origin}/obrigado`,
+})
+
+if (next.type === "redirect") {
+  location.href = next.url
+}
+```
+
+O cliente paga na página do provedor, com Pix Automático quando o provedor oferece. A confirmação chega pelo webhook, não pela volta para `successUrl`. Quando não há nada a pagar, como num plano grátis, `next.type` é `"none"`.
+
+Esse é o caminho mais curto. As opções abaixo dão mais controle, e o seu agente consegue montá-las a partir desta página.
+
+## Mostre o QR code no seu app
+
+```tsx title="app/precos/subscribe-button.tsx"
+const { next } = await dunas.subscribe({ planId: "pro", method: "pix", checkout: "embedded" })
+
+if (next.type === "pix") {
+  setPix(next)
+}
+```
+
+`next` traz o código copia e cola (`brCode`), a imagem do QR code (`qrCodeImageUrl`), quando houver, e a validade (`expiresAt`). Depois, espere o pagamento:
+
+```ts
+const charge = await dunas.waitForPayment({ chargeId: next.chargeId })
+
+if (charge.status === "paid") {
+  router.push("/obrigado")
+}
+```
+
+`waitForPayment` consulta a cada 2 segundos até a cobrança sair de pendente. Passe um `signal` para parar quando o cliente fechar a tela.
+
+## Escolha a forma de pagamento
+
+```ts
+await dunas.subscribe({ planId: "pro", method: "card" })
+```
+
+`method` aceita só o que os seus provedores ligaram em `methods`, e o TypeScript avisa quando não há. Veja [Formas de pagamento](/docs/conceitos/provedores#formas-de-pagamento).
+
+## Cancelar
+
+```ts
+await dunas.cancel({ planId: "pro" })
+```
+
+O cliente continua no Pro até o fim do período. No `listPlans`, o Pro passa a aparecer como `resume`.

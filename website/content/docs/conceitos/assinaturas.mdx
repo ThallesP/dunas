@@ -1,0 +1,45 @@
+---
+title: Assinaturas
+description: Como uma assinatura começa, renova e termina.
+---
+
+Cada período de uma assinatura tem a sua própria cobrança. O dunas cria cada uma na hora certa, confirma o pagamento e decide o acesso pelas datas.
+
+<SubscriptionLifecycle />
+
+## Como o cliente paga
+
+| Forma | Quem cobra a cada período |
+| --- | --- |
+| Pix Automático | O provedor debita sozinho, depois de uma autorização no banco |
+| Cartão | O provedor cobra o cartão salvo |
+| Pix | O dunas cria uma cobrança nova e avisa com `charge.created` |
+
+Sem você dizer a forma, o dunas usa Pix Automático quando algum provedor oferece e Pix quando não oferece ou quando a autorização não dá certo. Quais provedores têm cada forma está em [Provedores](/docs/conceitos/provedores#formas-de-pagamento).
+
+Se o cliente revogar o Pix Automático no banco, ou um débito falhar, a assinatura continua e passa a renovar por Pix. O dunas dispara `subscription.method_changed` para você avisar o cliente.
+
+## Renovação
+
+Rode as renovações uma vez por hora. A cada execução, o dunas:
+
+1. cria a cobrança do próximo período 3 dias antes do fim do atual e dispara `charge.created`, para você mandar o QR code ao cliente;
+2. estende o período quando essa cobrança é paga;
+3. marca a assinatura como em atraso se o período acabar sem pagamento, mantendo o acesso por mais 3 dias;
+4. cancela depois disso, e o cliente volta ao plano padrão.
+
+Com Pix Automático ou cartão, quem renova é o provedor. O dunas registra cada débito quando o webhook chega e estende o período do mesmo jeito.
+
+Os dois prazos mudam com `renewDaysBefore` e `graceDays`. O acesso é calculado pelas datas, então um cron atrasado nunca dá dias a mais. Como agendar está em [Ir para produção](/docs/guias/producao#agende-as-renovações).
+
+## Trocar de plano
+
+Assinar outro plano do mesmo grupo cria uma cobrança nova. O plano atual continua valendo até ela ser paga e, aí, é substituído na hora. Ainda não há proração.
+
+Voltar para o plano grátis não corta nada: o plano pago continua até o fim do período que já foi pago.
+
+## Cancelar
+
+Cancelar mantém o acesso até o fim do período. Se o cliente mudar de ideia antes disso, assinar o mesmo plano de novo retoma a assinatura sem cobrar outra vez. Para cortar na hora, use `immediately: true`.
+
+Com Pix Automático ou cartão, cancelar encerra a cobrança no provedor na hora, e o acesso segue até o fim do período. Se o cliente retomar depois disso, a assinatura passa a renovar por Pix.

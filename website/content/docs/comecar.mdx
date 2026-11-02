@@ -1,0 +1,238 @@
+---
+title: Começar
+description: Instale o dunas, declare seus planos e cobre a primeira assinatura no sandbox.
+---
+
+Você precisa de um app Node com Postgres e de uma conta de teste em pelo menos um provedor.
+
+<Steps>
+<Step>
+
+### Instale o pacote
+
+```npm
+npm install dunas pg
+```
+
+</Step>
+<Step>
+
+### Configure as variáveis de ambiente
+
+Coloque só as do provedor que você vai usar.
+
+```bash title=".env"
+DATABASE_URL=postgres://...
+
+WOOVI_APP_ID=...
+
+ABACATEPAY_API_KEY=...
+ABACATEPAY_WEBHOOK_SECRET=...
+
+CRON_SECRET=uma-string-longa-e-aleatoria
+```
+
+</Step>
+<Step>
+
+### Declare os planos
+
+Cada plano diz o que inclui. Aqui, o grátis manda 100 mensagens por mês e o Pro manda 5.000 e libera os modelos avançados.
+
+```ts title="billing/plans.ts"
+import { feature, plan } from "dunas"
+
+export const messages = feature({ id: "messages", type: "metered" })
+export const proModels = feature({ id: "pro_models", type: "boolean" })
+
+export const free = plan({
+  id: "free",
+  default: true,
+  includes: [messages({ limit: 100 })],
+})
+
+export const pro = plan({
+  id: "pro",
+  price: { amountInCents: 4_990, interval: "month" },
+  includes: [messages({ limit: 5_000 }), proModels()],
+})
+```
+
+</Step>
+<Step>
+
+### Crie a instância
+
+<Tabs items={["Woovi", "AbacatePay", "Os dois"]} groupId="provider" persist>
+<Tab value="Woovi">
+
+```ts title="billing/dunas.ts"
+import { createDunas, pg, woovi } from "dunas"
+import { Pool } from "pg"
+import { free, pro } from "./plans"
+
+export const billing = createDunas({
+  database: pg(new Pool({ connectionString: process.env.DATABASE_URL })),
+  plans: [free, pro],
+  providers: [woovi({ appId: process.env.WOOVI_APP_ID, sandbox: true })],
+  identify: (request) => getUser(request),
+})
+```
+
+</Tab>
+<Tab value="AbacatePay">
+
+```ts title="billing/dunas.ts"
+import { abacatepay, createDunas, pg } from "dunas"
+import { Pool } from "pg"
+import { free, pro } from "./plans"
+
+export const billing = createDunas({
+  database: pg(new Pool({ connectionString: process.env.DATABASE_URL })),
+  plans: [free, pro],
+  providers: [
+    abacatepay({
+      apiKey: process.env.ABACATEPAY_API_KEY,
+      webhookSecret: process.env.ABACATEPAY_WEBHOOK_SECRET,
+    }),
+  ],
+  identify: (request) => getUser(request),
+})
+```
+
+</Tab>
+<Tab value="Os dois">
+
+```ts title="billing/dunas.ts"
+import { abacatepay, createDunas, pg, woovi } from "dunas"
+import { Pool } from "pg"
+import { free, pro } from "./plans"
+
+export const billing = createDunas({
+  database: pg(new Pool({ connectionString: process.env.DATABASE_URL })),
+  plans: [free, pro],
+  providers: [
+    woovi({ appId: process.env.WOOVI_APP_ID, sandbox: true }),
+    abacatepay({
+      apiKey: process.env.ABACATEPAY_API_KEY,
+      webhookSecret: process.env.ABACATEPAY_WEBHOOK_SECRET,
+    }),
+  ],
+  routing: "failover",
+  identify: (request) => getUser(request),
+})
+```
+
+Com `failover`, a Woovi cria as cobranças e a AbacatePay assume quando ela falha. Veja os outros modos em [Provedores](/docs/conceitos/provedores#roteamento).
+
+</Tab>
+</Tabs>
+
+`identify` recebe a requisição e devolve quem é o cliente (`{ id, name, email }`) ou `null`. Ligue na autenticação que você já tem.
+
+<Callout title="Usa Better Auth?">
+  Troque por `identify: fromBetterAuth(auth)`, importado de `dunas/better-auth`.
+</Callout>
+
+</Step>
+<Step>
+
+### Crie as tabelas
+
+```ts
+await billing.migrate()
+```
+
+Cria as tabelas `dunas_*` no seu banco. Pode rodar a cada deploy: o que já existe não muda.
+
+</Step>
+<Step>
+
+### Monte a rota
+
+Uma rota só atende o navegador, os webhooks dos provedores e o cron de renovações.
+
+<Tabs items={["Next.js", "NestJS", "Hono", "Bun", "Express"]} groupId="framework" persist>
+<Tab value="Next.js" id="nextjs">
+
+```ts title="app/api/dunas/[...path]/route.ts"
+import { billing } from "@/billing/dunas"
+
+export const GET = billing.handler
+export const POST = billing.handler
+```
+
+</Tab>
+<Tab value="NestJS" id="nestjs">
+
+```ts title="app.module.ts"
+import { Module } from "@nestjs/common"
+import { DunasModule } from "dunas/nestjs"
+import { billing } from "./billing/dunas"
+
+@Module({ imports: [DunasModule.forRoot({ billing })] })
+export class AppModule {}
+```
+
+<Callout>O módulo atende em `/api/dunas` (o `basePath`) antes do body parser do Nest, então não precisa de `rawBody` e o `setGlobalPrefix` não muda a rota.</Callout>
+
+</Tab>
+<Tab value="Hono" id="hono">
+
+```ts title="server.ts"
+app.all("/api/dunas/*", (c) => billing.handler(c.req.raw))
+```
+
+</Tab>
+<Tab value="Bun" id="bun">
+
+```ts title="server.ts"
+Bun.serve({
+  routes: {
+    "/api/dunas/*": billing.handler,
+  },
+})
+```
+
+</Tab>
+<Tab value="Express" id="express">
+
+```ts title="server.ts"
+import { toNodeHandler } from "dunas/node"
+
+app.use("/api/dunas", toNodeHandler(billing.handler))
+app.use(express.json())
+```
+
+<Callout type="warn">Monte o dunas antes de `express.json()`, senão a assinatura dos webhooks não confere.</Callout>
+
+</Tab>
+</Tabs>
+
+</Step>
+<Step>
+
+### Crie o cliente
+
+No navegador, o cliente conversa com essa rota e herda os tipos do servidor.
+
+```ts title="lib/dunas-client.ts"
+import { createDunasClient } from "dunas/client"
+import type { billing } from "@/billing/dunas"
+
+export const dunas = createDunasClient<typeof billing>()
+```
+
+</Step>
+<Step>
+
+### Pronto
+
+O dunas está ligado. Agora:
+
+- [Limite o uso](/docs/guias/limitar-uso) de uma feature no servidor.
+- [Monte a página de preços](/docs/guias/pagina-de-precos) e cobre a primeira assinatura.
+- [Pague a cobrança no sandbox](/docs/guias/testar-pagamentos) para ver o plano mudar.
+
+</Step>
+</Steps>

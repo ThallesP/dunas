@@ -1,0 +1,54 @@
+---
+title: Testar pagamentos
+description: Pague cobranças de mentira no sandbox e teste renovações sem esperar um mês.
+---
+
+## No sandbox
+
+Com a Woovi em `sandbox: true` ou uma chave de desenvolvimento da AbacatePay, pague uma cobrança pelo servidor:
+
+```ts
+await billing.simulatePayment({ chargeId })
+```
+
+A assinatura muda na hora, como se o cliente tivesse pago. Na AbacatePay, isso vale para Pix com `checkout: "embedded"`. Pix Automático e cartão não têm simulação pela API: a Woovi simula Pix Automático no painel do sandbox, e a página de checkout da AbacatePay aceita cartão de teste.
+
+Uma rota só para desenvolvimento ajuda a testar pela interface:
+
+```ts title="app/api/dev/pay/route.ts"
+export async function POST(request: Request) {
+  if (process.env.NODE_ENV === "production") {
+    return new Response(null, { status: 404 })
+  }
+
+  const { chargeId } = await request.json()
+  return Response.json(await billing.simulatePayment({ chargeId }))
+}
+```
+
+## Em testes automatizados
+
+Troque o Postgres pelo PGlite, que roda em memória, e controle o relógio com `now`:
+
+```ts title="billing.test.ts"
+import { PGlite } from "@electric-sql/pglite"
+import { createDunas, pglite } from "dunas"
+
+let now = new Date("2026-01-01")
+
+const billing = createDunas({
+  database: pglite(new PGlite()),
+  plans: [free, pro],
+  providers,
+  now: () => now,
+})
+
+await billing.migrate()
+```
+
+Para testar uma renovação, avance o relógio e rode as renovações:
+
+```ts
+now = new Date("2026-01-30")
+await billing.runRenewals()
+```

@@ -1,0 +1,307 @@
+.hero {
+  position: relative;
+  min-height: 860px;
+  overflow: hidden;
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(5, 7, 11, 0.86) 0,
+      rgba(5, 7, 11, 0.86) 660px,
+      rgba(5, 7, 11, 0) 768px
+    ),
+    linear-gradient(to bottom, rgba(5, 7, 11, 0) 88%, var(--ground) 100%);
+}
+
+.dunes {
+  position: absolute;
+  left: 50%;
+  top: 220px;
+  width: 1920px;
+  height: 1080px;
+  max-width: none;
+  transform: translateX(-50%);
+  image-rendering: pixelated;
+  mask-image: linear-gradient(to bottom, transparent 0, #000 260px);
+}
+
+.stars {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+.content {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 520fr) minmax(0, 640fr);
+  column-gap: 56px;
+  align-items: center;
+  padding-top: 196px;
+}
+
+.title {
+  font: 600 clamp(48px, 4.8vw, 68px) / 0.98 var(--sans);
+  letter-spacing: -0.045em;
+}
+
+.shuffle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.12em;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: none;
+  box-shadow: inset 0 -0.05em 0 rgba(244, 239, 230, 0.3);
+  letter-spacing: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+
+.shuffle:hover {
+  box-shadow: inset 0 -0.05em 0 rgba(244, 239, 230, 0.6);
+}
+
+.shuffleIcon {
+  display: inline-flex;
+  width: 0.36em;
+  height: 0.36em;
+  color: var(--gray);
+  transition:
+    transform 0.3s,
+    color 0.2s;
+}
+
+.shuffle:hover .shuffleIcon {
+  color: var(--moon);
+  transform: rotate(-12deg);
+}
+
+.shuffled {
+  display: inline-block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .shuffled {
+    animation: shuffle-in 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+}
+
+@keyframes shuffle-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.1em);
+  }
+}
+
+.lede {
+  max-width: 520px;
+  margin-top: 28px;
+  color: #bac2d3;
+}
+
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 38px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 48px;
+  padding: 0 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(174, 187, 214, 0.22);
+  background: rgba(17, 24, 39, 0.5);
+  backdrop-filter: blur(12px);
+  font: 500 14px / 1 var(--sans);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.chip:hover,
+.chip:focus-visible {
+  border-color: rgba(174, 187, 214, 0.4);
+  --agent-logos-pull: 0;
+}
+
+.agents {
+  font-size: 32px;
+}
+
+.chipIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(174, 187, 214, 0.1);
+  color: var(--moon);
+}
+
+.window {
+  min-width: 0;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  height: 50px;
+  align-items: center;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.tab {
+  all: unset;
+  cursor: pointer;
+  font: 400 13px / 1 var(--mono);
+  color: var(--gray);
+  padding: 9px 14px;
+  border-radius: 10px;
+  transition: color 0.2s;
+}
+
+.tab:hover {
+  color: var(--text);
+}
+
+.tab[aria-selected="true"] {
+  color: var(--text);
+  background: rgba(174, 187, 214, 0.09);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--moon);
+  outline-offset: -2px;
+}
+
+.panes {
+  display: grid;
+}
+
+.pane {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.pane[inert] {
+  visibility: hidden;
+}
+
+.code pre {
+  padding: 16px 24px 14px 18px;
+  font: 400 13.5px / 1.75 var(--mono);
+  overflow-x: auto;
+  counter-reset: line;
+}
+
+.code :global(.line)::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  width: 30px;
+  color: #3a4358;
+  user-select: none;
+}
+
+@media (min-width: 1921px) {
+  .dunes {
+    top: 85px;
+    width: 2400px;
+    height: 1350px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .hero {
+    min-height: 0;
+  }
+
+  .content {
+    grid-template-columns: minmax(0, 1fr);
+    padding-top: 160px;
+    padding-bottom: 120px;
+  }
+
+  .title {
+    text-wrap: balance;
+  }
+
+  .lede {
+    max-width: 600px;
+  }
+
+  .window {
+    width: 100%;
+    max-width: 720px;
+    margin-top: 64px;
+  }
+
+  .dunes {
+    top: auto;
+    bottom: 0;
+    width: 1440px;
+    height: 810px;
+  }
+}
+
+@media (max-width: 640px) {
+  .content {
+    padding-top: 128px;
+    padding-bottom: 56px;
+  }
+
+  .ctas {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .agents {
+    font-size: 28px;
+  }
+
+  .window {
+    margin-top: 48px;
+    border-radius: 20px;
+  }
+
+  .code pre {
+    padding: 14px 18px 12px 12px;
+    font-size: 12px;
+  }
+
+  .code :global(.line)::before {
+    width: 24px;
+  }
+
+  .dunes {
+    width: 960px;
+    height: 540px;
+  }
+}

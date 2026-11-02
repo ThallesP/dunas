@@ -1,0 +1,97 @@
+---
+title: Ir para produção
+description: O que conferir antes de cobrar clientes de verdade.
+---
+
+## Troque as chaves
+
+Use as chaves de produção de cada provedor e tire `sandbox: true` da Woovi.
+
+## Registre os webhooks
+
+Depois do deploy, com o servidor respondendo:
+
+```ts
+await billing.registerWebhooks({ baseUrl: "https://seuapp.com" })
+```
+
+A Woovi chama a URL na hora de registrar e recusa se ela não responder. Rodar de novo não duplica nada, então pode fazer parte do seu script de deploy.
+
+## Agende as renovações
+
+Chame a rota de renovações uma vez por hora com o `CRON_SECRET`:
+
+<Tabs items={["Vercel Cron", "Qualquer cron"]}>
+<Tab value="Vercel Cron">
+
+```json title="vercel.json"
+{
+  "crons": [{ "path": "/api/dunas/renewals", "schedule": "0 * * * *" }]
+}
+```
+
+Defina `CRON_SECRET` nas variáveis do projeto. A Vercel envia o header de autorização sozinha.
+
+</Tab>
+<Tab value="Qualquer cron">
+
+```bash
+curl -X POST https://seuapp.com/api/dunas/renewals \
+  -H "Authorization: Bearer $CRON_SECRET"
+```
+
+Ou chame `billing.runRenewals()` direto, se você já tem um agendador.
+
+</Tab>
+</Tabs>
+
+## Avise o cliente
+
+Na renovação por Pix, o dunas cria a cobrança, mas quem manda para o cliente é você. Com Pix Automático ou cartão não há cobrança para mandar, e `subscription.method_changed` avisa quando a assinatura volta para Pix. Use os eventos:
+
+<Tabs items={["createDunas", "NestJS"]}>
+<Tab value="createDunas">
+
+```ts
+on: {
+  "charge.created": ({ charge }) => sendPaymentEmail(charge),
+  "subscription.past_due": ({ subscription }) => sendReminder(subscription),
+}
+```
+
+</Tab>
+<Tab value="NestJS">
+
+```ts title="billing-events.ts"
+import { Injectable } from "@nestjs/common"
+import type { DunasEvents } from "dunas"
+import { OnDunasEvent } from "dunas/nestjs"
+
+@Injectable()
+export class BillingEvents {
+  constructor(private readonly mail: MailService) {}
+
+  @OnDunasEvent("charge.created")
+  sendPaymentEmail({ charge }: DunasEvents["charge.created"]) {
+    return this.mail.sendPayment(charge)
+  }
+
+  @OnDunasEvent("subscription.past_due")
+  sendReminder({ subscription }: DunasEvents["subscription.past_due"]) {
+    return this.mail.sendReminder(subscription)
+  }
+}
+```
+
+Registre a classe como provider em qualquer módulo. O `DunasModule` encontra os métodos quando a aplicação sobe.
+
+</Tab>
+</Tabs>
+
+## Mande os dados de quem paga
+
+Os provedores pedem dados do pagador. Chame `upsertCustomer` com nome, e-mail, CPF ou CNPJ e celular assim que tiver. Veja o que cada provedor exige em [Provedores](/docs/conceitos/provedores#dados-do-cliente).
+
+## Rode as migrações no deploy
+
+`billing.migrate()` pode rodar a cada deploy. Novas versões do dunas podem trazer tabelas ou colunas novas.

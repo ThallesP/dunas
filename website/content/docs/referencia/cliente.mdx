@@ -1,0 +1,37 @@
+---
+title: Cliente
+description: O cliente do navegador, de dunas/client.
+---
+
+```ts
+import { createDunasClient } from "dunas/client"
+import type { billing } from "@/billing/dunas"
+
+const dunas = createDunasClient<typeof billing>()
+```
+
+O `import type` traz só os tipos do servidor, sem levar código dele para o navegador. Datas chegam como texto.
+
+## Opções
+
+| Opção | Padrão | |
+| --- | --- | --- |
+| `baseUrl` | `"/api/dunas"` | Mude junto com `basePath` no servidor |
+| `fetch` | `globalThis.fetch` | Para testes ou outro ambiente |
+
+## Métodos
+
+O cliente é sempre o da sessão atual, decidido por `identify` no servidor.
+
+| Método | Devolve |
+| --- | --- |
+| `getCustomer()` | O cliente com `subscriptions`, `balances` e `flags` |
+| `listPlans()` | Os planos com `action` |
+| `subscribe({ planId, method?, checkout?, successUrl? })` | O mesmo resultado do servidor |
+| `cancel({ planId })` | A assinatura cancelada ou agendada |
+| `getCharge({ chargeId })` | A cobrança, relida no provedor se estiver pendente |
+| `waitForPayment({ chargeId, intervalMs?, signal? })` | A cobrança quando sair de pendente |
+
+## Erros
+
+Respostas de erro viram `DunasClientError`, com `code` e `status`. Sem sessão, o `code` é `UNAUTHORIZED` e o `status` é 401.

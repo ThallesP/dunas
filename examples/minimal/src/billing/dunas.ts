@@ -1,0 +1,28 @@
+import { abacatepay, createDunas, type PaymentProvider, pglite, woovi } from "dunas"
+import { database } from "../lib/database.ts"
+import { userFromRequest } from "../lib/session.ts"
+import { free, pro } from "./plans.ts"
+
+const { WOOVI_APP_ID, ABACATEPAY_API_KEY, ABACATEPAY_WEBHOOK_SECRET } = process.env
+
+const providers = [
+  WOOVI_APP_ID ? woovi({ appId: WOOVI_APP_ID, sandbox: true }) : null,
+  ABACATEPAY_API_KEY && ABACATEPAY_WEBHOOK_SECRET
+    ? abacatepay({ apiKey: ABACATEPAY_API_KEY, webhookSecret: ABACATEPAY_WEBHOOK_SECRET })
+    : null,
+].filter((provider) => provider !== null)
+
+const [firstProvider, ...otherProviders] = providers
+if (!firstProvider) {
+  throw new Error("Set WOOVI_APP_ID or ABACATEPAY_API_KEY + ABACATEPAY_WEBHOOK_SECRET in .env")
+}
+
+export const billing = createDunas({
+  database: pglite(database),
+  plans: [free, pro],
+  providers: [firstProvider, ...otherProviders] satisfies [PaymentProvider, ...PaymentProvider[]],
+  routing: "round-robin",
+  identify: userFromRequest,
+})
+
+await billing.migrate()

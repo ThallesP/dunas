@@ -1,0 +1,142 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --ground: #05070b;
+  --deep: #111827;
+  --mid: #2c3a58;
+  --moon: #aebbd6;
+  --text: #f4efe6;
+  --gray: #8b93a7;
+  --tile: #0b0f18;
+  --line: rgba(174, 187, 214, 0.1);
+  --teal: #32bcad;
+  --amber: #f7d9a8;
+  --amber2: #c98b4e;
+  --sans: var(--font-instrument-sans), system-ui, sans-serif;
+  --mono: var(--font-geist-mono), ui-monospace, monospace;
+  color-scheme: dark;
+}
+
+html {
+  overscroll-behavior-y: none;
+}
+
+html,
+body {
+  background: var(--ground);
+}
+
+body {
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+img,
+canvas,
+svg {
+  display: block;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--moon);
+  outline-offset: 3px;
+}
+
+.wrap {
+  width: min(1200px, 100% - 48px);
+  margin-inline: auto;
+}
+
+.display {
+  font: 600 clamp(40px, 5vw, 72px) / 1.02 var(--sans);
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.lede {
+  font-size: 21px;
+  line-height: 1.45;
+  color: var(--gray);
+  letter-spacing: -0.005em;
+}
+
+.glass {
+  background: rgba(11, 15, 24, 0.56);
+  backdrop-filter: blur(28px) saturate(150%);
+  border: 1px solid rgba(174, 187, 214, 0.16);
+  box-shadow:
+    inset 0 1px 0 rgba(244, 239, 230, 0.22),
+    0 40px 90px rgba(0, 0, 0, 0.6);
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 999px;
+  font: 500 16px / 1 var(--sans);
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s;
+}
+
+.btn-light {
+  background: var(--text);
+  color: var(--ground);
+}
+
+.btn-light:hover {
+  background: #fff;
+}
+
+.btn-ghost {
+  color: var(--text);
+  border: 1px solid rgba(174, 187, 214, 0.22);
+  background: rgba(11, 15, 24, 0.35);
+}
+
+.btn-ghost:hover {
+  border-color: rgba(174, 187, 214, 0.4);
+}
+
+@media (max-width: 640px) {
+  .wrap {
+    width: calc(100% - 40px);
+  }
+
+  .lede {
+    font-size: 18px;
+  }
+}

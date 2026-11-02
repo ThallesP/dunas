@@ -1,0 +1,56 @@
+---
+title: Configuração
+description: As opções de createDunas, de plan e de feature, e os eventos.
+---
+
+## createDunas
+
+| Opção | Padrão | |
+| --- | --- | --- |
+| `database` | — | `pg(pool)` ou `pglite(db)` |
+| `plans` | — | Os seus planos |
+| `providers` | — | Pelo menos um provedor |
+| `routing` | `"failover"` | Veja [Provedores](/docs/conceitos/provedores#roteamento) |
+| `identify` | — | `(request) => cliente ou null`. Obrigatório para o navegador |
+| `on` | `{}` | Funções por evento |
+| `basePath` | `"/api/dunas"` | Onde a rota está montada |
+| `cronSecret` | `process.env.CRON_SECRET` | Protege a rota de renovações |
+| `renewDaysBefore` | `3` | Quantos dias antes do fim do período a cobrança é criada |
+| `graceDays` | `3` | Quantos dias de acesso depois do fim de um período não pago |
+| `chargeExpiresInSeconds` | `86_400` | Validade de cada cobrança |
+| `now` | `() => new Date()` | O relógio, para testes |
+
+## Planos
+
+| Opção de `plan` | Padrão | |
+| --- | --- | --- |
+| `id` | — | Letras minúsculas, números, `-` e `_` |
+| `name` | do `id` | `"pro_anual"` vira `"Pro Anual"` |
+| `price` | grátis | `{ amountInCents, interval }`. Mínimo de 100 centavos; `interval` é `week`, `month` ou `year` |
+| `default` | `false` | O plano de quem não assinou nada no grupo. Precisa ser grátis |
+| `group` | `"base"` | Planos do mesmo grupo se substituem |
+| `includes` | `[]` | As features do plano |
+
+## Features
+
+| | Como declarar | Como incluir num plano |
+| --- | --- | --- |
+| Com limite | `feature({ id, type: "metered" })` | `messages({ limit, reset? })`, com `limit` numérico ou `"unlimited"` e `reset` em `day`, `week`, `month` (padrão), `year` ou `never` |
+| Liga e desliga | `feature({ id, type: "boolean" })` | `proModels()` |
+
+## Eventos
+
+| Evento | Recebe |
+| --- | --- |
+| `charge.created` | `{ charge }` |
+| `charge.paid` | `{ charge }` |
+| `charge.expired` | `{ charge }` |
+| `subscription.activated` | `{ subscription }` |
+| `subscription.renewed` | `{ subscription }` |
+| `subscription.past_due` | `{ subscription }` |
+| `subscription.canceled` | `{ subscription }` |
+| `subscription.method_changed` | `{ subscription, previousMethod }` |
+
+Os eventos rodam depois que a mudança foi salva. Um erro na sua função vai para o log e não desfaz nada.
+
+Para registrar depois de criar o `billing`, use `billing.on`. No NestJS, use `@OnDunasEvent` em qualquer provider, como em [Avise o cliente](/docs/guias/producao#avise-o-cliente).
