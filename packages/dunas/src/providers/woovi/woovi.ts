@@ -1,5 +1,6 @@
 import { createVerify } from "node:crypto"
 import type { BillingInterval } from "../../catalog/plan.ts"
+import { required } from "../../lib/required.ts"
 import { safeEqual } from "../../lib/safe-equal.ts"
 import {
   type ChargeStatus,
@@ -18,7 +19,7 @@ type WooviCapabilities = { pix: Checkout; pix_automatico: Checkout }
 type WooviMethod = keyof WooviCapabilities
 
 export type WooviOptions<TMethod extends WooviMethod = WooviMethod> = {
-  appId: string
+  appId: string | undefined
   sandbox?: boolean
   webhookAuthorization?: string
   methods?: readonly TMethod[]
@@ -153,7 +154,7 @@ const pixAutomaticoEvents = [
 ]
 
 export function woovi<const TMethod extends WooviMethod = "pix">({
-  appId,
+  appId: appIdOption,
   sandbox = false,
   webhookAuthorization,
   methods = [],
@@ -161,6 +162,7 @@ export function woovi<const TMethod extends WooviMethod = "pix">({
   "woovi",
   Pick<WooviCapabilities, "pix" | NoInfer<TMethod>>
 > {
+  const appId = required(appIdOption, "Woovi appId is missing. Set WOOVI_APP_ID.")
   const baseUrl = sandbox ? "https://api.woovi-sandbox.com" : "https://api.woovi.com"
   const payUrl = sandbox ? "https://woovi-sandbox.com/pay" : "https://woovi.com/pay"
   const enabledMethods = [...new Set<"pix" | TMethod>(["pix", ...methods])]

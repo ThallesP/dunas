@@ -1,5 +1,6 @@
 import { createHmac } from "node:crypto"
 import type { BillingInterval } from "../../catalog/plan.ts"
+import { required } from "../../lib/required.ts"
 import { safeEqual } from "../../lib/safe-equal.ts"
 import {
   type ChargeReference,
@@ -19,8 +20,8 @@ type AbacatePayCapabilities = { pix: Checkout; pix_automatico: "hosted"; card: "
 type AbacatePayMethod = keyof AbacatePayCapabilities
 
 export type AbacatePayOptions<TMethod extends AbacatePayMethod = AbacatePayMethod> = {
-  apiKey: string
-  webhookSecret: string
+  apiKey: string | undefined
+  webhookSecret: string | undefined
   methods?: readonly TMethod[]
 }
 
@@ -132,13 +133,18 @@ const signingKey =
   "t9dXRhHHo3yDEj5pVDYz0frf7q6bMKyMRmxxCPIPp3RCplBfXRxqlC6ZpiWmOqj4L63qEaeUOtrCI8P0VMUgo6iIga2ri9ogaHFs0WIIywSMg0q7RmBfybe1E5XJcfC4IW3alNqym0tXoAKkzvfEjZxV6bE0oG2zJrNNYmUCKZyV0KZ3JS8Votf9EAWWYdiDkMkpbMdPggfh1EqHlVkMiTady6jOR3hyzGEHrIz2Ret0xHKMbiqkr9HS1JhNHDX9"
 
 export function abacatepay<const TMethod extends AbacatePayMethod = "pix">({
-  apiKey,
-  webhookSecret,
+  apiKey: apiKeyOption,
+  webhookSecret: webhookSecretOption,
   methods = [],
 }: AbacatePayOptions<TMethod>): PaymentProvider<
   "abacatepay",
   Pick<AbacatePayCapabilities, "pix" | NoInfer<TMethod>>
 > {
+  const apiKey = required(apiKeyOption, "AbacatePay apiKey is missing. Set ABACATEPAY_API_KEY.")
+  const webhookSecret = required(
+    webhookSecretOption,
+    "AbacatePay webhookSecret is missing. Set ABACATEPAY_WEBHOOK_SECRET.",
+  )
   if (webhookSecret.length < 32) {
     throw new Error("AbacatePay webhookSecret must have at least 32 characters")
   }
