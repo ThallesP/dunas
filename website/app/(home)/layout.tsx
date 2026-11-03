@@ -2,9 +2,11 @@ import type { Metadata } from "next"
 import type { ReactNode } from "react"
 import { CopyEditor } from "@/components/copy-editor/copy-editor"
 import { fontVariables } from "@/lib/fonts"
+import { links } from "@/lib/links"
 import "./globals.css"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(links.site),
   title: "dunas — o billing do seu SaaS em uma biblioteca",
   description:
     "Planos, assinaturas e limites de uso numa API só, rodando dentro do seu app e no seu Postgres.",

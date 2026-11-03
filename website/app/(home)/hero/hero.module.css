@@ -1,6 +1,6 @@
-/* Short desktop windows (and link-preview screenshots) lift the dunes into the fold. */
+/* Short desktop windows and 16:9 link-preview crops lift the dunes into the fold. */
 .hero {
-  --lift: clamp(0px, 860px - 100svh, 140px);
+  --lift: clamp(0px, 860px - min(100svh, 56.25vw), 140px);
   position: relative;
   min-height: calc(860px - var(--lift));
   overflow: hidden;

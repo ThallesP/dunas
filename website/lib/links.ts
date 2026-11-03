@@ -1,7 +1,8 @@
-const site = "https://dunasjs.com"
+const site = "https://dunasjs.dev"
 const github = "https://github.com/dunasjs/dunas"
 
 export const links = {
+  site,
   github,
   docs: "/docs",
   skill: `${site}/SKILL.md`,
