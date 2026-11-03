@@ -9,15 +9,23 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: "/ingest/static/:path*",
+        source: "/dunes/static/:version/sand.js",
+        destination: "https://us-assets.i.posthog.com/static/:version/posthog-recorder.js",
+      },
+      {
+        source: "/dunes/static/sand.js",
+        destination: "https://us-assets.i.posthog.com/static/posthog-recorder.js",
+      },
+      {
+        source: "/dunes/static/:path*",
         destination: "https://us-assets.i.posthog.com/static/:path*",
       },
       {
-        source: "/ingest/array/:path*",
+        source: "/dunes/array/:path*",
         destination: "https://us-assets.i.posthog.com/array/:path*",
       },
       {
-        source: "/ingest/:path*",
+        source: "/dunes/:path*",
         destination: "https://us.i.posthog.com/:path*",
       },
     ]
