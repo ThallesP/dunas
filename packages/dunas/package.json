@@ -3,7 +3,16 @@
   "version": "0.0.1",
   "description": "Billing for Brazil: plans, usage and subscriptions by Pix, Pix Automático or card on Woovi and AbacatePay, inside your app.",
   "license": "MIT",
+  "homepage": "https://dunasjs.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThallesP/dunas.git",
+    "directory": "packages/dunas"
+  },
   "type": "module",
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": "./src/index.ts",
     "./client": "./src/client/client.ts",
@@ -11,11 +20,36 @@
     "./node": "./src/http/node.ts",
     "./nestjs": "./src/integrations/nestjs.ts"
   },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "./client": {
+        "types": "./dist/client.d.mts",
+        "default": "./dist/client.mjs"
+      },
+      "./better-auth": {
+        "types": "./dist/better-auth.d.mts",
+        "default": "./dist/better-auth.mjs"
+      },
+      "./node": {
+        "types": "./dist/node.d.mts",
+        "default": "./dist/node.mjs"
+      },
+      "./nestjs": {
+        "types": "./dist/nestjs.d.mts",
+        "default": "./dist/nestjs.mjs"
+      }
+    }
+  },
   "scripts": {
     "build": "tsdown",
     "test": "vitest run --project unit",
     "test:e2e": "vitest run --project e2e",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "pnpm run build"
   },
   "peerDependencies": {
     "@electric-sql/pglite": ">=0.3",
