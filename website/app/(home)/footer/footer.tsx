@@ -15,6 +15,7 @@ export function Footer() {
           <a href={links.examples}>Exemplos</a>
           <a href={links.github}>GitHub</a>
           <a href={links.npm}>npm</a>
+          <a href={links.discord}>Discord</a>
         </nav>
       </div>
     </footer>

@@ -198,3 +198,7 @@ const billing = createDunas({ database: pglite(new PGlite()), plans, providers, 
 ## Status
 
 Early. Not yet: proration on upgrades, trials, refunds, boleto, changing the payment method of a running subscription.
+
+## Community
+
+Questions, ideas or just want to talk? Come say hi on [Discord](https://discord.gg/pF5wfWZMSH).

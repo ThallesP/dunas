@@ -7,4 +7,5 @@ export const links = {
   skill: `${site}/SKILL.md`,
   examples: `${github}/tree/main/examples`,
   npm: "https://www.npmjs.com/package/dunas",
+  discord: "https://discord.gg/pF5wfWZMSH",
 }
