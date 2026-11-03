@@ -1,17 +1,17 @@
 ---
 name: dunas
-description: Adiciona cobrança com a biblioteca dunas (planos, assinaturas e limites de uso sobre Woovi e AbacatePay) a um app Node com Postgres. Use quando o usuário pedir para cobrar, criar planos, assinaturas, limites de uso ou integrar Woovi ou AbacatePay.
+description: Adiciona cobrança com a biblioteca dunas (planos, assinaturas e limites de uso sobre a AbacatePay) a um app Node com Postgres. Use quando o usuário pedir para cobrar, criar planos, assinaturas, limites de uso ou integrar a AbacatePay.
 ---
 
 # Cobrança com dunas
 
-O dunas é uma biblioteca, não um serviço: roda dentro do app, guarda tudo no Postgres do próprio app e fala direto com a Woovi e a AbacatePay. Este arquivo tem o passo a passo e, no fim, a documentação inteira. Leia tudo antes de escrever código e não invente API que não esteja aqui.
+O dunas é uma biblioteca, não um serviço: roda dentro do app, guarda tudo no Postgres do próprio app e fala direto com a AbacatePay. Este arquivo tem o passo a passo e, no fim, a documentação inteira. Leia tudo antes de escrever código e não invente API que não esteja aqui.
 
 ## Passo a passo
 
 1. **Olhe o projeto.** Descubra o gerenciador de pacotes, o framework HTTP (Next.js, Hono, NestJS, Express), como o app acessa o Postgres e como ele autentica usuários. Se já existir `billing/dunas.ts` ou `dunas` no `package.json`, continue de onde parou em vez de recomeçar.
 2. **Pergunte os planos.** Antes de criar `billing/plans.ts`, pergunte ao usuário quais planos, preços e limites ele quer. Se ele não souber, proponha um plano grátis padrão e um pago e espere ele concordar.
-3. **Instale** `dunas` e `pg` com o gerenciador de pacotes do projeto. Adicione ao `.env` só as variáveis do gateway que o usuário tem (Woovi, AbacatePay ou os dois) e um `CRON_SECRET` aleatório. Nunca escreva chaves reais em arquivos versionados; se faltar alguma, peça ao usuário.
+3. **Instale** `dunas` e `pg` com o gerenciador de pacotes do projeto. Adicione ao `.env` as variáveis da AbacatePay e um `CRON_SECRET` aleatório. Nunca escreva chaves reais em arquivos versionados; se faltar alguma, peça ao usuário.
 4. **Declare os planos** em `billing/plans.ts` e **crie a instância** em `billing/dunas.ts`, como na página "Começar".
 5. **Ligue `identify` à autenticação que já existe.** Com Better Auth, use `fromBetterAuth(auth)` de `dunas/better-auth`. O navegador nunca manda `customerId`.
 6. **Crie as tabelas e monte a rota.** Rode `billing.migrate()` e monte `billing.handler` em `/api/dunas`, do jeito do framework do app.

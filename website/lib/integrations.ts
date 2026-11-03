@@ -1,7 +1,6 @@
 import { providers } from "./featured-provider"
 
 export const integrations = [
-  { name: providers.woovi.name, logo: providers.woovi.logo },
   { name: providers.abacatepay.name, logo: providers.abacatepay.logo },
   { name: "Postgres", logo: "/logos/postgres.svg" },
   { name: "Better Auth", logo: "/logos/better-auth.svg" },
