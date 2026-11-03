@@ -3,6 +3,7 @@ packages:
   - examples/*
   - website
 allowBuilds:
+  core-js: false
   esbuild: true
 minimumReleaseAgeExclude:
   - '@vitejs/plugin-react@6.2.1'
