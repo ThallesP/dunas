@@ -2,7 +2,7 @@
 
 # dunas
 
-Billing for Brazil that runs inside your app. Plans, usage limits and subscriptions paid by Pix, Pix Automático or card on top of **Woovi** and **AbacatePay**, with one API, your own Postgres and no billing server in between.
+Billing for Brazil that runs inside your app. Plans, usage limits and subscriptions paid by Pix, Pix Automático or card on top of **AbacatePay**, with one API, your own Postgres and no billing server in between.
 
 Inspired by [paykit](https://paykit.sh), which does this for Stripe.
 
@@ -13,7 +13,7 @@ if (!allowed) return Response.json({ error: "Limite do plano atingido" }, { stat
 
 ## Why
 
-Pix has no card on file. Every month someone has to create a new charge, show the QR code, wait for the payment, extend the period, and cut access when it isn't paid. Pix Automático and cards fix that, but only where the gateway has them turned on. dunas uses them when it can, falls back to a Pix every period when it can't, keeps entitlements in your database so `check` is one local query, and lets you put Woovi and AbacatePay behind the same API, picking one, rotating between them or failing over when one is down.
+Pix has no card on file. Every month someone has to create a new charge, show the QR code, wait for the payment, extend the period, and cut access when it isn't paid. Pix Automático and cards fix that, but only where the gateway has them turned on. dunas uses them when it can, falls back to a Pix every period when it can't, keeps entitlements in your database so `check` is one local query, and lets you put more than one gateway behind the same API, picking one, rotating between them or failing over when one is down.
 
 ## Plans
 
@@ -47,7 +47,7 @@ export const pro = plan({
 
 ```ts
 // billing/dunas.ts
-import { abacatepay, createDunas, pg, woovi } from "dunas"
+import { abacatepay, createDunas, pg } from "dunas"
 import { fromBetterAuth } from "dunas/better-auth"
 import { Pool } from "pg"
 import { free, pro } from "./plans"
@@ -56,10 +56,8 @@ export const billing = createDunas({
   database: pg(new Pool({ connectionString: process.env.DATABASE_URL })),
   plans: [free, pro],
   providers: [
-    woovi({ appId: process.env.WOOVI_APP_ID, methods: ["pix_automatico"] }),
-    abacatepay({ apiKey: process.env.ABACATEPAY_API_KEY, webhookSecret: process.env.ABACATEPAY_WEBHOOK_SECRET, methods: ["card"] }),
+    abacatepay({ apiKey: process.env.ABACATEPAY_API_KEY, webhookSecret: process.env.ABACATEPAY_WEBHOOK_SECRET, methods: ["card", "pix_automatico"] }),
   ],
-  routing: "failover",
   identify: fromBetterAuth(auth),
   on: {
     "charge.created": ({ charge }) => sendPixEmail(charge),
@@ -68,7 +66,7 @@ export const billing = createDunas({
 })
 ```
 
-Pix is always on. `methods` turns on what your gateway account has: `"pix_automatico"` on Woovi or AbacatePay, `"card"` on AbacatePay. `subscribe` only accepts what at least one provider turned on, and TypeScript checks that.
+Pix is always on. `methods` turns on what your gateway account has: `"pix_automatico"` and `"card"` on AbacatePay. `subscribe` only accepts what at least one provider turned on, and TypeScript checks that.
 
 ```ts
 await billing.migrate()
@@ -178,15 +176,15 @@ Access is computed from the dates, so a late cron never gives away extra days.
 ```ts
 routing: "failover"                                   // first provider, next one if it errors (default)
 routing: "round-robin"
-routing: { weights: { woovi: 70, abacatepay: 30 } }
-routing: ({ amountInCents }) => (amountInCents > 50_000 ? "woovi" : "abacatepay")
+routing: { weights: { ... } }                        // split by weight
+routing: ({ amountInCents, customerId }) => ...       // you decide, by amount or customer
 ```
 
 Webhooks are only a signal: dunas verifies them, then reads the charge back from the gateway before changing anything.
 
 ## Testing
 
-`billing.simulatePayment({ chargeId })` pays a Pix charge in Woovi sandbox or AbacatePay dev mode (embedded checkout only on AbacatePay). Pix Automático and card can't be simulated through the API. For unit tests use PGlite:
+`billing.simulatePayment({ chargeId })` pays a Pix charge in AbacatePay dev mode (embedded checkout only). Pix Automático and card can't be simulated through the API. For unit tests use PGlite:
 
 ```ts
 import { PGlite } from "@electric-sql/pglite"
