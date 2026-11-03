@@ -6,7 +6,7 @@ description: Declare o que cada plano inclui. O resto do app só pergunta se o c
 Uma **feature** é algo que você controla: mensagens, assentos, um modelo melhor. Um **plano** diz quanto de cada feature o cliente recebe e quanto custa.
 
 ```ts title="billing/plans.ts"
-import { feature, plan } from "dunas"
+import { feature, plan } from "dunasjs"
 
 export const messages = feature({ id: "messages", type: "metered" })
 export const seats = feature({ id: "seats", type: "metered" })

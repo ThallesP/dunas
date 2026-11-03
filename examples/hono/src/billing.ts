@@ -1,5 +1,5 @@
 import { PGlite } from "@electric-sql/pglite"
-import { abacatepay, createDunas, pglite, woovi } from "dunas"
+import { abacatepay, createDunas, pglite, woovi } from "dunasjs"
 import { free, pro } from "./plans.ts"
 
 export const billing = createDunas({

@@ -2,7 +2,7 @@ import { featuredProvider } from "@/lib/featured-provider"
 
 const setupImports = ["createDunas", "pg", featuredProvider.id].sort().join(", ")
 
-export const setupSnippet = `import { ${setupImports} } from "dunas"
+export const setupSnippet = `import { ${setupImports} } from "dunasjs"
 import { free, pro } from "./plans"
 
 export const billing = createDunas({
@@ -13,7 +13,7 @@ export const billing = createDunas({
   ],
 })`
 
-export const plansSnippet = `import { feature, plan } from "dunas"
+export const plansSnippet = `import { feature, plan } from "dunasjs"
 
 export const messages = feature({ id: "messages", type: "metered" })
 

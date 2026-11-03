@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router"
-import type { PaymentMethod } from "dunas"
+import type { PaymentMethod } from "dunasjs"
 import { ArrowLeft, Copy, LoaderCircle } from "lucide-react"
 import { useEffect, useState } from "react"
 import { getCheckout, getPaymentStatus, startSubscription } from "../billing/functions.ts"

@@ -1,5 +1,5 @@
 import { PGlite } from "@electric-sql/pglite"
-import { abacatepay, createDunas, type PaymentProvider, pglite, woovi } from "dunas"
+import { abacatepay, createDunas, type PaymentProvider, pglite, woovi } from "dunasjs"
 import { free, pro } from "./plans.ts"
 
 const { WOOVI_APP_ID, ABACATEPAY_API_KEY, ABACATEPAY_WEBHOOK_SECRET } = process.env

@@ -1,4 +1,4 @@
-import { abacatepay, createDunas, pglite, woovi } from "dunas"
+import { abacatepay, createDunas, pglite, woovi } from "dunasjs"
 import { database } from "../lib/database.ts"
 import { userFromRequest } from "../lib/session.ts"
 import { free, pro } from "./plans.ts"

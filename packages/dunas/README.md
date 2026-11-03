@@ -19,7 +19,7 @@ Pix has no card on file. Every month someone has to create a new charge, show th
 
 ```ts
 // billing/plans.ts
-import { feature, plan } from "dunas"
+import { feature, plan } from "dunasjs"
 
 export const messages = feature({ id: "messages", type: "metered" })
 export const seats = feature({ id: "seats", type: "metered" })
@@ -47,8 +47,8 @@ export const pro = plan({
 
 ```ts
 // billing/dunas.ts
-import { abacatepay, createDunas, pg } from "dunas"
-import { fromBetterAuth } from "dunas/better-auth"
+import { abacatepay, createDunas, pg } from "dunasjs"
+import { fromBetterAuth } from "dunasjs/better-auth"
 import { Pool } from "pg"
 import { free, pro } from "./plans"
 
@@ -88,7 +88,7 @@ app.all("/api/dunas/*", (c) => billing.handler(c.req.raw))
 
 ```ts
 // NestJS: app.module.ts, serves basePath before Nest's body parser, so no rawBody
-import { DunasModule } from "dunas/nestjs"
+import { DunasModule } from "dunasjs/nestjs"
 
 @Module({ imports: [DunasModule.forRoot({ billing })] })
 export class AppModule {}
@@ -143,7 +143,7 @@ plans.map(({ id, name, price, action }) => <PlanCard key={id} name={name} price=
 ## Browser client
 
 ```ts
-import { createDunasClient } from "dunas/client"
+import { createDunasClient } from "dunasjs/client"
 import type { billing } from "@/billing/dunas"
 
 const dunas = createDunasClient<typeof billing>()
@@ -188,7 +188,7 @@ Webhooks are only a signal: dunas verifies them, then reads the charge back from
 
 ```ts
 import { PGlite } from "@electric-sql/pglite"
-import { pglite } from "dunas"
+import { pglite } from "dunasjs"
 
 const billing = createDunas({ database: pglite(new PGlite()), plans, providers, now: () => clock.now })
 ```

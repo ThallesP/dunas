@@ -184,7 +184,7 @@ importers:
       '@tanstack/react-start':
         specifier: 1.169.4
         version: 1.169.4(esbuild@0.28.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rolldown@1.2.14)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
-      dunas:
+      dunasjs:
         specifier: workspace:*
         version: link:../../packages/dunas
       lucide-react:
@@ -227,7 +227,7 @@ importers:
       '@hono/node-server':
         specifier: ^1.19.0
         version: 1.19.17(hono@4.13.13)
-      dunas:
+      dunasjs:
         specifier: workspace:*
         version: link:../../packages/dunas
       hono:
@@ -249,7 +249,7 @@ importers:
       '@tanstack/react-start':
         specifier: 1.169.4
         version: 1.169.4(esbuild@0.28.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rolldown@1.2.14)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
-      dunas:
+      dunasjs:
         specifier: workspace:*
         version: link:../../packages/dunas
       lucide-react:
@@ -298,7 +298,7 @@ importers:
       '@nestjs/platform-express':
         specifier: ^12.2.0
         version: 12.2.0(@nestjs/common@12.2.0(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@12.2.0)
-      dunas:
+      dunasjs:
         specifier: workspace:*
         version: link:../../packages/dunas
       reflect-metadata:

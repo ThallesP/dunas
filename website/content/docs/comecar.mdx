@@ -11,7 +11,7 @@ Você precisa de um app Node com Postgres e de uma conta de teste em pelo menos 
 ### Instale o pacote
 
 ```npm
-npm install dunas pg
+npm install dunasjs pg
 ```
 
 </Step>
@@ -36,7 +36,7 @@ CRON_SECRET=uma-string-longa-e-aleatoria
 Cada plano diz o que inclui. Aqui, o grátis manda 100 mensagens por mês e o Pro manda 5.000 e libera os modelos avançados.
 
 ```ts title="billing/plans.ts"
-import { feature, plan } from "dunas"
+import { feature, plan } from "dunasjs"
 
 export const messages = feature({ id: "messages", type: "metered" })
 export const proModels = feature({ id: "pro_models", type: "boolean" })
@@ -60,7 +60,7 @@ export const pro = plan({
 ### Crie a instância
 
 ```ts title="billing/dunas.ts"
-import { abacatepay, createDunas, pg } from "dunas"
+import { abacatepay, createDunas, pg } from "dunasjs"
 import { Pool } from "pg"
 import { free, pro } from "./plans"
 
@@ -80,7 +80,7 @@ export const billing = createDunas({
 `identify` recebe a requisição e devolve quem é o cliente (`{ id, name, email }`) ou `null`. Ligue na autenticação que você já tem.
 
 <Callout title="Usa Better Auth?">
-  Troque por `identify: fromBetterAuth(auth)`, importado de `dunas/better-auth`.
+  Troque por `identify: fromBetterAuth(auth)`, importado de `dunasjs/better-auth`.
 </Callout>
 
 </Step>
@@ -116,7 +116,7 @@ export const POST = billing.handler
 
 ```ts title="app.module.ts"
 import { Module } from "@nestjs/common"
-import { DunasModule } from "dunas/nestjs"
+import { DunasModule } from "dunasjs/nestjs"
 import { billing } from "./billing/dunas"
 
 @Module({ imports: [DunasModule.forRoot({ billing })] })
@@ -147,7 +147,7 @@ Bun.serve({
 <Tab value="Express" id="express">
 
 ```ts title="server.ts"
-import { toNodeHandler } from "dunas/node"
+import { toNodeHandler } from "dunasjs/node"
 
 app.use("/api/dunas", toNodeHandler(billing.handler))
 app.use(express.json())
@@ -166,7 +166,7 @@ app.use(express.json())
 No navegador, o cliente conversa com essa rota e herda os tipos do servidor.
 
 ```ts title="lib/dunas-client.ts"
-import { createDunasClient } from "dunas/client"
+import { createDunasClient } from "dunasjs/client"
 import type { billing } from "@/billing/dunas"
 
 export const dunas = createDunasClient<typeof billing>()

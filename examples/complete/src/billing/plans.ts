@@ -1,4 +1,4 @@
-import { feature, plan } from "dunas"
+import { feature, plan } from "dunasjs"
 
 export const bookings = feature({ id: "bookings", type: "metered" })
 export const reports = feature({ id: "reports", type: "boolean" })

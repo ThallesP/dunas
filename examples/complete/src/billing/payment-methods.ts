@@ -1,4 +1,4 @@
-import type { PaymentMethod } from "dunas"
+import type { PaymentMethod } from "dunasjs"
 
 export const paymentMethodDetails: Record<PaymentMethod, { label: string; description: string }> = {
   pix_automatico: {

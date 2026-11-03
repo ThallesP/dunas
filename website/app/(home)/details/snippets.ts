@@ -12,7 +12,7 @@ export const POST = billing.handler`
 
 export const nestSnippet = `import { All, Controller, Req, Res } from "@nestjs/common"
 import type { Request, Response } from "express"
-import { toNodeHandler } from "dunas/node"
+import { toNodeHandler } from "dunasjs/node"
 
 @Controller("api/dunas")
 export class DunasController {

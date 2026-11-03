@@ -1,4 +1,4 @@
-export const plansSnippet = `import { feature, plan } from "dunas"
+export const plansSnippet = `import { feature, plan } from "dunasjs"
 
 const messages = feature({ id: "messages", type: "metered" })
 

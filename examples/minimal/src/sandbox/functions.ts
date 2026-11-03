@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start"
-import { DunasError } from "dunas"
+import { DunasError } from "dunasjs"
 import { billing } from "../billing/dunas.ts"
 import { database } from "../lib/database.ts"
 import { currentUser } from "../lib/session.ts"
