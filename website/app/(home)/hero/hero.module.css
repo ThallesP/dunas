@@ -1,6 +1,8 @@
+/* Short desktop windows (and link-preview screenshots) lift the dunes into the fold. */
 .hero {
+  --lift: clamp(0px, 860px - 100svh, 140px);
   position: relative;
-  min-height: 860px;
+  min-height: calc(860px - var(--lift));
   overflow: hidden;
 }
 
@@ -20,8 +22,8 @@
     linear-gradient(
       to bottom,
       rgba(5, 7, 11, 0.86) 0,
-      rgba(5, 7, 11, 0.86) 660px,
-      rgba(5, 7, 11, 0) 768px
+      rgba(5, 7, 11, 0.86) calc(660px - var(--lift)),
+      rgba(5, 7, 11, 0) calc(768px - var(--lift))
     ),
     linear-gradient(to bottom, rgba(5, 7, 11, 0) 88%, var(--ground) 100%);
 }
@@ -29,7 +31,7 @@
 .dunes {
   position: absolute;
   left: 50%;
-  top: 220px;
+  top: calc(220px - var(--lift));
   width: 1920px;
   height: 1080px;
   max-width: none;
@@ -232,7 +234,7 @@
 
 @media (min-width: 1921px) {
   .dunes {
-    top: 85px;
+    top: calc(85px - var(--lift));
     width: 2400px;
     height: 1350px;
   }
@@ -240,6 +242,7 @@
 
 @media (max-width: 1100px) {
   .hero {
+    --lift: 0px;
     min-height: 0;
   }
 
