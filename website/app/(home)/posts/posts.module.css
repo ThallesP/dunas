@@ -1,5 +1,5 @@
 .posts {
-  padding-top: 160px;
+  padding-top: var(--section-gap);
   text-align: center;
 }
 
@@ -91,10 +91,6 @@
 }
 
 @media (max-width: 640px) {
-  .posts {
-    padding-top: 96px;
-  }
-
   .grid {
     columns: 1;
     margin-top: 48px;

@@ -1,5 +1,5 @@
 .routing {
-  padding-top: 104px;
+  padding-top: var(--section-gap);
   text-align: center;
 }
 
@@ -307,10 +307,6 @@
 }
 
 @media (max-width: 640px) {
-  .routing {
-    padding-top: 48px;
-  }
-
   .panel {
     margin-top: 56px;
     padding: 16px 16px 24px;

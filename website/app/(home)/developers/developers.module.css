@@ -1,5 +1,5 @@
 .developers {
-  padding-top: 200px;
+  padding-top: var(--section-gap);
 }
 
 .inner {
@@ -70,10 +70,6 @@
 }
 
 @media (max-width: 640px) {
-  .developers {
-    padding-top: 120px;
-  }
-
   .code pre {
     padding: 16px 18px 20px;
     font-size: 12px;

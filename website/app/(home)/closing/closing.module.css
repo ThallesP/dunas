@@ -1,6 +1,6 @@
 .closing {
   position: relative;
-  margin-top: 220px;
+  margin-top: var(--section-gap);
   padding-bottom: 320px;
   text-align: center;
   overflow: hidden;
@@ -153,7 +153,6 @@
 
 @media (max-width: 640px) {
   .closing {
-    margin-top: 120px;
     padding-bottom: 240px;
   }
 
