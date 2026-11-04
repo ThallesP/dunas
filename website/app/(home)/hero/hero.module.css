@@ -105,14 +105,16 @@
   margin: auto 0;
   width: 0.36em;
   height: 0.36em;
-  color: var(--gray);
+  color: var(--moon);
+  opacity: 0;
   transition:
     transform 0.3s,
-    color 0.2s;
+    opacity 0.2s;
 }
 
-.swap:hover .swapIcon {
-  color: var(--moon);
+.swap:hover .swapIcon,
+.swap:focus-visible .swapIcon {
+  opacity: 1;
   transform: rotate(-12deg);
 }
 
