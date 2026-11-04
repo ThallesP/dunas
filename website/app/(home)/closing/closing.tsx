@@ -29,7 +29,7 @@ export function Closing() {
             <span className={styles.commandLead}>
               Adicione cobrança com a biblioteca dunas a este app:
             </span>
-            dunasjs.com/SKILL.md
+            dunasjs.dev/SKILL.md
           </span>
         </CopyButton>
         <div className={styles.ctas}>

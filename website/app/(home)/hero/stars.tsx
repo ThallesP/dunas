@@ -21,9 +21,8 @@ function placeStars(width: number) {
   for (let i = 0; i < attempts && stars.length < maxStars; i++) {
     const x = Math.floor(random() * width)
     const y = Math.floor(random() * SKY_HEIGHT * 0.8)
-    const isBehindCopy = x / width < 0.48 && y / SKY_HEIGHT > 0.26
-    const isBehindWindow = x / width > 0.47 && y / SKY_HEIGHT > 0.48
-    if (isBehindCopy || isBehindWindow) continue
+    const isBehindCopy = Math.abs(x / width - 0.5) < 0.34 && y / SKY_HEIGHT > 0.3
+    if (isBehindCopy) continue
     stars.push({
       x,
       y,

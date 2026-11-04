@@ -1,0 +1,399 @@
+.routing {
+  padding-top: 104px;
+  text-align: center;
+}
+
+.lede {
+  width: min(700px, 100%);
+  margin: 26px auto 0;
+  text-wrap: balance;
+}
+
+.panel {
+  position: relative;
+  height: 540px;
+  margin-top: 80px;
+  border-radius: 28px;
+  background: #080b12;
+  backdrop-filter: none;
+  text-align: left;
+}
+
+.flow {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+.top {
+  position: absolute;
+  top: 28px;
+  left: 28px;
+  right: 32px;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+
+.segments {
+  display: flex;
+  flex: none;
+  min-width: 0;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(5, 7, 11, 0.6);
+  border: 1px solid var(--line);
+}
+
+.segment {
+  height: 38px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font: 500 15px / 38px var(--sans);
+  color: var(--gray);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+.segment:hover {
+  color: var(--text);
+}
+
+.segment[aria-pressed="true"] {
+  background: rgba(174, 187, 214, 0.14);
+  color: var(--text);
+}
+
+.config {
+  min-width: 0;
+  font: 400 12.5px / 1.5 var(--mono);
+  color: #8fa3cc;
+  text-align: right;
+}
+
+.diagram {
+  display: contents;
+}
+
+.node {
+  z-index: 2;
+  height: 88px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 20px;
+  border-radius: 18px;
+  background: rgba(5, 7, 11, 0.78);
+  border: 1px solid rgba(174, 187, 214, 0.14);
+  transition:
+    border-color 0.25s,
+    opacity 0.35s;
+}
+
+.app,
+.dunas {
+  position: absolute;
+  top: 226px;
+  width: max-content;
+  min-width: 16.667%;
+}
+
+.app {
+  left: 6%;
+}
+
+.dunas {
+  left: 50%;
+  translate: -50% 0;
+  border-color: rgba(174, 187, 214, 0.3);
+  box-shadow: 0 0 0 6px rgba(174, 187, 214, 0.035);
+}
+
+.providers {
+  position: absolute;
+  z-index: 2;
+  left: 75%;
+  top: 140px;
+  width: 21%;
+  display: flex;
+  flex-direction: column;
+  gap: 84px;
+}
+
+.providerNode {
+  position: relative;
+}
+
+.name {
+  font: 500 17px / 1.2 var(--sans);
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 7px;
+  font: 400 12px / 1 var(--mono);
+  color: var(--gray);
+  white-space: nowrap;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--moon);
+  flex: none;
+}
+
+.icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: rgba(174, 187, 214, 0.08);
+  border: 1px solid var(--line);
+  flex: none;
+}
+
+.count {
+  margin-left: auto;
+  text-align: right;
+}
+
+.countValue {
+  display: block;
+  font: 600 24px / 1 var(--sans);
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+
+.countLabel {
+  display: block;
+  margin-top: 6px;
+  font: 400 11.5px / 1 var(--mono);
+  color: var(--gray);
+}
+
+.down {
+  opacity: 0.45;
+}
+
+.down .dot {
+  background: transparent;
+  border: 1.5px solid #5b6478;
+}
+
+.flash {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1px solid rgba(174, 187, 214, 0.5);
+  pointer-events: none;
+  animation: flash 0.55s ease-out forwards;
+}
+
+.caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 42px;
+  z-index: 2;
+  padding: 0 24px;
+  text-align: center;
+  font-size: 19px;
+  color: #c3cada;
+  letter-spacing: -0.005em;
+}
+
+.fadeIn {
+  animation: fade-in 0.25s ease-out;
+}
+
+@keyframes flash {
+  0% {
+    opacity: 0;
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 1100px) {
+  .panel {
+    height: auto;
+    padding: 24px 24px 32px;
+  }
+
+  .top {
+    position: relative;
+    inset: auto;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .config {
+    min-height: 3em;
+    text-align: left;
+  }
+
+  .diagram {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 72px;
+    margin-top: 40px;
+  }
+
+  .app,
+  .dunas {
+    position: relative;
+    top: auto;
+    left: auto;
+    translate: none;
+    width: min(240px, 100%);
+  }
+
+  .providers {
+    position: static;
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .providerNode {
+    flex: 0 1 252px;
+    min-width: 0;
+  }
+
+  .caption {
+    position: relative;
+    inset: auto;
+    min-height: 3em;
+    margin-top: 40px;
+    padding: 0;
+    line-height: 1.5;
+    text-wrap: balance;
+  }
+}
+
+@media (max-width: 640px) {
+  .routing {
+    padding-top: 48px;
+  }
+
+  .panel {
+    margin-top: 56px;
+    padding: 16px 16px 24px;
+    border-radius: 24px;
+  }
+
+  .top {
+    align-items: stretch;
+  }
+
+  .segments {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-radius: 22px;
+  }
+
+  .segment {
+    padding: 0 12px;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .config {
+    font-size: 11.5px;
+  }
+
+  .diagram {
+    gap: 56px;
+    margin-top: 32px;
+  }
+
+  .node {
+    height: 76px;
+    gap: 12px;
+    padding: 0 16px;
+  }
+
+  .name {
+    font-size: 16px;
+  }
+
+  .providers {
+    gap: 10px;
+  }
+
+  .providerNode {
+    flex: 1 1 0;
+    height: auto;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .providerNode .count {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-left: 0;
+    text-align: left;
+  }
+
+  .providerNode .countLabel {
+    margin-top: 0;
+  }
+
+  .caption {
+    margin-top: 32px;
+    font-size: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flash {
+    display: none;
+  }
+
+  .fadeIn {
+    animation: none;
+  }
+
+  .node,
+  .segment {
+    transition: none;
+  }
+}
