@@ -5,6 +5,7 @@ import { links } from "@/lib/links"
 import { Nav } from "../nav/nav"
 import styles from "./hero.module.css"
 import { HeroScene } from "./hero-scene"
+import { HeroTitle } from "./hero-title"
 
 export function Hero() {
   return (
@@ -12,11 +13,10 @@ export function Hero() {
       <HeroScene />
       <Nav />
       <div className={`wrap ${styles.content}`}>
-        <h1 className={styles.title}>Se um provedor cair, você continua vendendo.</h1>
+        <HeroTitle />
         <p className={`lede ${styles.lede}`}>
           Planos, assinaturas e limites de uso numa biblioteca só, ligada a mais de um provedor de
-          pagamento. Se um sai do ar, bloqueia sua conta ou sobe a taxa, a cobrança passa pelo
-          outro.
+          pagamento. A cobrança passa pelo outro.
         </p>
         <div className={styles.ctas}>
           <a className="btn btn-light" href={links.docs}>
