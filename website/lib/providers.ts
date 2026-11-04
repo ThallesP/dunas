@@ -15,6 +15,3 @@ export const providers = {
     })`,
   },
 }
-
-// The landing page names one provider at a time. Switch it when pitching the other one.
-export const featuredProvider = providers.abacatepay

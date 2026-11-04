@@ -5,13 +5,13 @@ description: Pague cobranças de mentira no sandbox e teste renovações sem esp
 
 ## No sandbox
 
-Com uma chave de desenvolvimento da AbacatePay, pague uma cobrança pelo servidor:
+Com a Woovi em `sandbox: true` ou uma chave de desenvolvimento da AbacatePay, pague uma cobrança pelo servidor:
 
 ```ts
 await billing.simulatePayment({ chargeId })
 ```
 
-A assinatura muda na hora, como se o cliente tivesse pago. Na AbacatePay, isso vale para Pix com `checkout: "embedded"`. Pix Automático e cartão não têm simulação pela API, mas a página de checkout da AbacatePay aceita cartão de teste.
+A assinatura muda na hora, como se o cliente tivesse pago. Na AbacatePay, isso vale para Pix com `checkout: "embedded"`. Pix Automático e cartão não têm simulação pela API: a Woovi simula Pix Automático no painel do sandbox, e a página de checkout da AbacatePay aceita cartão de teste.
 
 Uma rota só para desenvolvimento ajuda a testar pela interface:
 

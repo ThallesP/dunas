@@ -5,6 +5,14 @@ description: Um provedor ou vários, atrás da mesma API.
 
 O provedor é quem cobra de verdade. O dunas fala com cada um do jeito dele e entrega a mesma resposta para o seu código, então trocar ou adicionar um provedor é uma linha na configuração.
 
+## Woovi
+
+```ts
+woovi({ appId: process.env.WOOVI_APP_ID, sandbox: true })
+```
+
+`sandbox: true` usa o ambiente de testes. Se você configurar um header de autorização nos webhooks da Woovi, passe o mesmo valor em `webhookAuthorization`.
+
 ## AbacatePay
 
 ```ts
@@ -21,6 +29,8 @@ O modo de desenvolvimento vem da própria chave.
 Pix vem ligado em todos os provedores. As outras formas você liga em `methods`, só com o que a sua conta tem:
 
 ```ts
+woovi({ appId: process.env.WOOVI_APP_ID, methods: ["pix_automatico"] })
+
 abacatepay({
   apiKey: process.env.ABACATEPAY_API_KEY,
   webhookSecret: process.env.ABACATEPAY_WEBHOOK_SECRET,
@@ -30,10 +40,12 @@ abacatepay({
 
 | | Pix | Pix Automático | Cartão |
 | --- | --- | --- | --- |
+| Woovi | `hosted` ou `embedded` | `hosted` ou `embedded` | — |
 | AbacatePay | `hosted` ou `embedded` | `hosted` | `hosted` |
 
 `hosted` manda o cliente para a página do provedor. `embedded` devolve o Pix para você mostrar no seu app. O TypeScript acompanha essa tabela: `subscribe` só aceita a forma e o checkout que algum provedor ligou.
 
+- Na Woovi, Pix Automático pede o nome e o CPF ou CNPJ do cliente.
 - Na AbacatePay, Pix Automático precisa ser habilitado na loja pelo suporte.
 - Uma assinatura com Pix Automático ou cartão fica no provedor que a criou. O roteamento só escolhe na hora de assinar.
 
@@ -45,8 +57,12 @@ Com mais de um provedor, `routing` escolhe qual cria cada cobrança, entre os qu
 | --- | --- |
 | `"failover"` | Usa o primeiro da lista e passa para o próximo se ele falhar. É o padrão. |
 | `"round-robin"` | Alterna entre eles. |
-| `{ weights: { ... } }` | Divide por peso. |
+| `{ weights: { woovi: 70, abacatepay: 30 } }` | Divide por peso. |
 | Uma função | Você decide, por valor ou por cliente. |
+
+```ts
+routing: ({ amountInCents }) => (amountInCents > 50_000 ? "woovi" : "abacatepay")
+```
 
 A função também pode devolver uma lista, que vira a ordem de tentativa.
 
@@ -62,4 +78,4 @@ Registrar de novo não duplica nada. E o dunas trata cada aviso só como um sina
 
 ## Dados do cliente
 
-Os provedores pedem dados de quem paga. Mande o que você tiver com `upsertCustomer`. A AbacatePay recebe o pagador quando há nome, e-mail, CPF ou CNPJ e celular.
+Os provedores pedem dados de quem paga. Mande o que você tiver com `upsertCustomer`. A AbacatePay recebe o pagador quando há nome, e-mail, CPF ou CNPJ e celular. A Woovi, quando há nome e pelo menos um desses três.

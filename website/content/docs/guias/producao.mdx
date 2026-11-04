@@ -5,7 +5,7 @@ description: O que conferir antes de cobrar clientes de verdade.
 
 ## Troque as chaves
 
-Use as chaves de produção de cada provedor.
+Use as chaves de produção de cada provedor e tire `sandbox: true` da Woovi.
 
 ## Registre os webhooks
 
@@ -15,7 +15,7 @@ Depois do deploy, com o servidor respondendo:
 await billing.registerWebhooks({ baseUrl: "https://seuapp.com" })
 ```
 
-Rodar de novo não duplica nada, então pode fazer parte do seu script de deploy.
+A Woovi chama a URL na hora de registrar e recusa se ela não responder. Rodar de novo não duplica nada, então pode fazer parte do seu script de deploy.
 
 ## Agende as renovações
 

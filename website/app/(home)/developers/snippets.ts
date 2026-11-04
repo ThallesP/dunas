@@ -1,15 +1,14 @@
-import { featuredProvider } from "@/lib/featured-provider"
+import { providers } from "@/lib/providers"
 
-const setupImports = ["createDunas", "pg", featuredProvider.id].sort().join(", ")
-
-export const setupSnippet = `import { ${setupImports} } from "dunasjs"
+export const setupSnippet = `import { abacatepay, createDunas, pg, woovi } from "dunasjs"
 import { free, pro } from "./plans"
 
 export const billing = createDunas({
   database: pg(pool),
   plans: [free, pro],
   providers: [
-    ${featuredProvider.setup},
+    ${providers.woovi.setup},
+    ${providers.abacatepay.setup},
   ],
   routing: "failover",
 })`

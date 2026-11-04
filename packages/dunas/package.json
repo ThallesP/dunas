@@ -1,7 +1,7 @@
 {
   "name": "dunasjs",
   "version": "0.0.1",
-  "description": "Billing for Brazil: plans, usage and subscriptions by Pix, Pix Automático or card on AbacatePay, inside your app.",
+  "description": "Billing for Brazil: plans, usage and subscriptions by Pix, Pix Automático or card on Woovi and AbacatePay, inside your app.",
   "license": "MIT",
   "homepage": "https://dunasjs.dev",
   "repository": {

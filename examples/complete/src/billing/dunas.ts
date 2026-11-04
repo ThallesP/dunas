@@ -1,4 +1,4 @@
-import { abacatepay, createDunas, pglite } from "dunasjs"
+import { abacatepay, createDunas, pglite, woovi } from "dunasjs"
 import { database } from "../lib/database.ts"
 import { userFromRequest } from "../lib/session.ts"
 import { free, pro } from "./plans.ts"
@@ -7,12 +7,14 @@ export const billing = createDunas({
   database: pglite(database),
   plans: [free, pro],
   providers: [
+    woovi({ appId: process.env.WOOVI_APP_ID, sandbox: true }),
     abacatepay({
       apiKey: process.env.ABACATEPAY_API_KEY,
       webhookSecret: process.env.ABACATEPAY_WEBHOOK_SECRET,
       methods: ["card"],
     }),
   ],
+  routing: "round-robin",
   identify: userFromRequest,
   on: {
     "subscription.activated": ({ subscription }) =>

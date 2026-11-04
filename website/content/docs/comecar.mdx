@@ -19,8 +19,12 @@ npm install dunasjs pg
 
 ### Configure as variáveis de ambiente
 
+Coloque só as do provedor que você vai usar.
+
 ```bash title=".env"
 DATABASE_URL=postgres://...
+
+WOOVI_APP_ID=...
 
 ABACATEPAY_API_KEY=...
 ABACATEPAY_WEBHOOK_SECRET=...
@@ -59,6 +63,25 @@ export const pro = plan({
 
 ### Crie a instância
 
+<Tabs items={["Woovi", "AbacatePay", "Os dois"]} groupId="provider" persist>
+<Tab value="Woovi">
+
+```ts title="billing/dunas.ts"
+import { createDunas, pg, woovi } from "dunasjs"
+import { Pool } from "pg"
+import { free, pro } from "./plans"
+
+export const billing = createDunas({
+  database: pg(new Pool({ connectionString: process.env.DATABASE_URL })),
+  plans: [free, pro],
+  providers: [woovi({ appId: process.env.WOOVI_APP_ID, sandbox: true })],
+  identify: (request) => getUser(request),
+})
+```
+
+</Tab>
+<Tab value="AbacatePay">
+
 ```ts title="billing/dunas.ts"
 import { abacatepay, createDunas, pg } from "dunasjs"
 import { Pool } from "pg"
@@ -76,6 +99,34 @@ export const billing = createDunas({
   identify: (request) => getUser(request),
 })
 ```
+
+</Tab>
+<Tab value="Os dois">
+
+```ts title="billing/dunas.ts"
+import { abacatepay, createDunas, pg, woovi } from "dunasjs"
+import { Pool } from "pg"
+import { free, pro } from "./plans"
+
+export const billing = createDunas({
+  database: pg(new Pool({ connectionString: process.env.DATABASE_URL })),
+  plans: [free, pro],
+  providers: [
+    woovi({ appId: process.env.WOOVI_APP_ID, sandbox: true }),
+    abacatepay({
+      apiKey: process.env.ABACATEPAY_API_KEY,
+      webhookSecret: process.env.ABACATEPAY_WEBHOOK_SECRET,
+    }),
+  ],
+  routing: "failover",
+  identify: (request) => getUser(request),
+})
+```
+
+Com `failover`, a Woovi cria as cobranças e a AbacatePay assume quando ela falha. Veja os outros modos em [Provedores](/docs/conceitos/provedores#roteamento).
+
+</Tab>
+</Tabs>
 
 `identify` recebe a requisição e devolve quem é o cliente (`{ id, name, email }`) ou `null`. Ligue na autenticação que você já tem.
 
