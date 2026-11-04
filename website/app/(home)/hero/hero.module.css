@@ -1,8 +1,5 @@
-/* Short desktop windows and 16:9 link-preview crops lift the dunes into the fold. */
 .hero {
-  --lift: clamp(0px, 740px - min(100svh, 56.25vw), 140px);
   position: relative;
-  min-height: calc(740px - var(--lift));
   overflow: hidden;
 }
 
@@ -19,19 +16,14 @@
   inset: 0;
   z-index: 1;
   background:
-    linear-gradient(
-      to bottom,
-      rgba(5, 7, 11, 0.86) 0,
-      rgba(5, 7, 11, 0.86) calc(540px - var(--lift)),
-      rgba(5, 7, 11, 0) calc(648px - var(--lift))
-    ),
+    linear-gradient(to top, rgba(5, 7, 11, 0) 92px, rgba(5, 7, 11, 0.86) 200px),
     linear-gradient(to bottom, rgba(5, 7, 11, 0) 88%, var(--ground) 100%);
 }
 
 .dunes {
   position: absolute;
   left: 50%;
-  top: calc(100px - var(--lift));
+  bottom: -440px;
   width: 1920px;
   height: 1080px;
   max-width: none;
@@ -55,7 +47,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 184px;
+  justify-content: center;
+  min-height: clamp(680px, 100svh, 1000px);
+  padding-top: 76px;
+  padding-bottom: 200px;
   text-align: center;
 }
 
@@ -190,25 +185,20 @@
 
 @media (min-width: 1921px) {
   .dunes {
-    top: calc(-35px - var(--lift));
+    bottom: -575px;
     width: 2400px;
     height: 1350px;
   }
 }
 
 @media (max-width: 1100px) {
-  .hero {
-    --lift: 0px;
-    min-height: 0;
-  }
-
   .content {
+    min-height: 0;
     padding-top: 160px;
     padding-bottom: 360px;
   }
 
   .dunes {
-    top: auto;
     bottom: 0;
     width: 1440px;
     height: 810px;
