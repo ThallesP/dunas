@@ -24,11 +24,10 @@ export function HeroTitle() {
         >
           Se um provedor{" "}
           <button type="button" onClick={handleSwap} title="Trocar" className={styles.swap}>
-            <span className={`${styles.word} ${hasSwapped ? styles.swapped : ""}`}>{reason}</span>
+            <span className={`${styles.word} ${hasSwapped ? styles.swapped : ""}`}>{reason}</span>,
             <span className={styles.swapIcon}>
               <ShuffleIcon size="100%" />
             </span>
-            <span className={styles.comma}>,</span>
           </button>
           <br />
           você continua vendendo.
