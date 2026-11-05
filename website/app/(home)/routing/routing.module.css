@@ -159,6 +159,13 @@
   flex: none;
 }
 
+.logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  flex: none;
+}
+
 .count {
   margin-left: auto;
   text-align: right;

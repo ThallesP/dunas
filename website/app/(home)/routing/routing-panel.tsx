@@ -135,11 +135,17 @@ export function RoutingPanel() {
         <div className={styles.providers}>
           <ProviderNode
             ref={first}
-            name="Provedor 1"
+            name="Woovi"
+            logo="/logos/woovi.png"
             count={view.counts.first}
             isDown={view.isFirstDown}
           />
-          <ProviderNode ref={second} name="Provedor 2" count={view.counts.second} />
+          <ProviderNode
+            ref={second}
+            name="AbacatePay"
+            logo="/logos/abacatepay.png"
+            count={view.counts.second}
+          />
         </div>
       </div>
       <p key={view.run} className={`${styles.caption} ${fadeClass}`}>
