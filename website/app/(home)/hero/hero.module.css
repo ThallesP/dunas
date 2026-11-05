@@ -56,7 +56,9 @@
 
 .title {
   display: grid;
-  font: 600 clamp(40px, 4.9vw, 70px) / 0.98 var(--sans);
+  width: max-content;
+  max-width: calc(100vw - 48px);
+  font: 600 clamp(40px, 5.8vw, 92px) / 0.98 var(--sans);
   letter-spacing: -0.045em;
 }
 
@@ -131,8 +133,9 @@
 }
 
 .lede {
-  max-width: 660px;
-  margin-top: 26px;
+  max-width: 720px;
+  margin-top: 30px;
+  font-size: clamp(18px, 1.5vw, 23px);
   color: #c7cdda;
   text-wrap: pretty;
 }
@@ -142,7 +145,7 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 12px;
-  margin-top: 36px;
+  margin-top: 40px;
 }
 
 .chip {
@@ -218,6 +221,10 @@
 
   .agents {
     font-size: 28px;
+  }
+
+  .titleLayer:not(.activeLayer) {
+    display: none;
   }
 
   .swap {
