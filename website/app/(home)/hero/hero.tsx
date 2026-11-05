@@ -6,6 +6,7 @@ import { Nav } from "../nav/nav"
 import styles from "./hero.module.css"
 import { HeroScene } from "./hero-scene"
 import { HeroTitle } from "./hero-title"
+import { Horizon } from "./horizon"
 
 export function Hero() {
   return (
@@ -33,6 +34,7 @@ export function Hero() {
           </CopyButton>
         </div>
       </div>
+      <Horizon />
     </section>
   )
 }

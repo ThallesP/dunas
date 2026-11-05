@@ -1,20 +1,9 @@
-.routing {
-  padding-top: var(--section-gap);
-  text-align: center;
-}
-
-.lede {
-  width: min(700px, 100%);
-  margin: 26px auto 0;
-  text-wrap: balance;
-}
-
 .panel {
   position: relative;
   height: 540px;
-  margin-top: 80px;
   border-radius: 28px;
   background: #080b12;
+  box-shadow: 0 -40px 120px rgba(5, 7, 11, 0.6);
   backdrop-filter: none;
   text-align: left;
 }
@@ -315,7 +304,6 @@
 
 @media (max-width: 640px) {
   .panel {
-    margin-top: 56px;
     padding: 16px 16px 24px;
     border-radius: 24px;
   }

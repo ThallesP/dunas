@@ -4,7 +4,6 @@ import { Footer } from "./footer/footer"
 import { OverscrollReveal } from "./footer/overscroll-reveal"
 import { Hero } from "./hero/hero"
 import { Posts } from "./posts/posts"
-import { Routing } from "./routing/routing"
 
 export default function HomePage() {
   return (
@@ -12,7 +11,6 @@ export default function HomePage() {
       <main>
         <Hero />
         <Posts />
-        <Routing />
         <Developers />
         <Closing />
       </main>

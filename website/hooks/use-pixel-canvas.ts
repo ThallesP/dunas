@@ -21,7 +21,7 @@ export function usePixelCanvas(pixelSize: number, start: (pixels: PixelCanvas) =
     const observer = new ResizeObserver(() => {
       const width = Math.ceil(canvas.clientWidth / pixelSize)
       const height = Math.ceil(canvas.clientHeight / pixelSize)
-      if (`${width}x${height}` === size) return
+      if (!width || !height || `${width}x${height}` === size) return
 
       size = `${width}x${height}`
       stop()

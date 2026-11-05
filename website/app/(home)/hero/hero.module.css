@@ -1,4 +1,6 @@
 .hero {
+  --dunes-width: 1920px;
+  --dunes-height: 1080px;
   position: relative;
   overflow: hidden;
 }
@@ -10,26 +12,41 @@
   overflow: hidden;
 }
 
-.scene::after {
+.horizon {
+  position: relative;
+  margin-top: 72px;
+}
+
+.horizonArt {
+  position: absolute;
+  top: calc(var(--dunes-height) * -0.18);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+}
+
+.horizonArt::after {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: 1;
-  background:
-    linear-gradient(to top, rgba(5, 7, 11, 0) 92px, rgba(5, 7, 11, 0.86) 200px),
-    linear-gradient(to bottom, rgba(5, 7, 11, 0) 88%, var(--ground) 100%);
+  background: linear-gradient(to bottom, rgba(5, 7, 11, 0) 80%, var(--ground) 100%);
 }
 
 .dunes {
   position: absolute;
+  top: 0;
   left: 50%;
-  bottom: -440px;
-  width: 1920px;
-  height: 1080px;
+  width: var(--dunes-width);
+  height: var(--dunes-height);
   max-width: none;
   transform: translateX(-50%);
   image-rendering: pixelated;
-  mask-image: linear-gradient(to bottom, transparent 0, #000 260px);
+  mask-image: linear-gradient(to bottom, transparent 11%, #000 24%);
+}
+
+.panelWrap {
+  position: relative;
 }
 
 .stars {
@@ -47,10 +64,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: clamp(680px, 100svh, 1000px);
-  padding-top: 76px;
-  padding-bottom: 200px;
+  padding-top: 200px;
   text-align: center;
 }
 
@@ -187,31 +201,39 @@
 }
 
 @media (min-width: 1921px) {
-  .dunes {
-    bottom: -575px;
-    width: 2400px;
-    height: 1350px;
+  .hero {
+    --dunes-width: 2400px;
+    --dunes-height: 1350px;
   }
 }
 
 @media (max-width: 1100px) {
-  .content {
-    min-height: 0;
-    padding-top: 160px;
-    padding-bottom: 360px;
+  .hero {
+    --dunes-width: 1440px;
+    --dunes-height: 810px;
   }
 
-  .dunes {
-    bottom: 0;
-    width: 1440px;
-    height: 810px;
+  .content {
+    padding-top: 160px;
+  }
+
+  .horizon {
+    margin-top: 56px;
   }
 }
 
 @media (max-width: 640px) {
+  .hero {
+    --dunes-width: 960px;
+    --dunes-height: 540px;
+  }
+
   .content {
     padding-top: 128px;
-    padding-bottom: 240px;
+  }
+
+  .horizon {
+    margin-top: 40px;
   }
 
   .ctas {
@@ -242,10 +264,5 @@
 
   .swapped {
     display: inline;
-  }
-
-  .dunes {
-    width: 960px;
-    height: 540px;
   }
 }

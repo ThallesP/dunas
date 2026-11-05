@@ -4,6 +4,7 @@ import type { NextConfig } from "next"
 const withMDX = createMDX()
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ["100.123.155.61", "dev", "dev.tail8eb3d.ts.net"],
   images: { unoptimized: true },
   skipTrailingSlashRedirect: true,
   async rewrites() {
