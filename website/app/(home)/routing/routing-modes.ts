@@ -27,14 +27,14 @@ export const routingModes: Record<RoutingMode, RoutingModeCopy> = {
   },
   weights: {
     label: "Por peso",
-    config: "routing: { weights: { woovi: 70, abacatepay: 30 } }",
+    config: "routing: { weights: { provedor1: 70, provedor2: 30 } }",
     caption: "Divida as cobranças por porcentagem.",
     durationInSeconds: 4.4,
     next: "rule",
   },
   rule: {
     label: "Sua regra",
-    config: 'routing: ({ amountInCents }) => amountInCents > 50_000 ? "abacatepay" : "woovi"',
+    config: 'routing: ({ amountInCents }) => amountInCents > 50_000 ? "provedor2" : "provedor1"',
     caption: "Uma função escolhe o provedor de cada cobrança, pelo valor ou pelo cliente.",
     durationInSeconds: 4.6,
     next: "failover",
